@@ -86,7 +86,7 @@ import { MatchCard, MatchRowState } from '../../shared/match-card/match-card';
     .empty .ball i { font-size: 34px; }
     .empty .t { font-family: var(--font-display); font-weight: 600; font-size: 16px; margin: 0 0 14px; }
 
-    .phead { padding: 12px 14px 10px; position: sticky; top: 0; z-index: 5; background: var(--color-background-tertiary); box-shadow: 0 6px 12px -8px rgba(0, 0, 0, 0.35); }
+    .phead { padding: 12px 14px 10px; }
     .ptitle { display: flex; align-items: center; gap: 10px; }
     .logo { width: 36px; height: 36px; border-radius: var(--border-radius-md); background: var(--color-background-warning); color: var(--color-text-warning); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .logo i { font-size: 20px; }

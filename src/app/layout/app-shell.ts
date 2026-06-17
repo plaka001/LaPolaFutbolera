@@ -20,7 +20,7 @@ import { BottomNav } from '../shared/bottom-nav/bottom-nav';
       height: 100dvh;
       max-width: 480px;
       margin: 0 auto;
-      background: var(--color-background-tertiary);
+      background: transparent;
     }
     .content {
       flex: 1;

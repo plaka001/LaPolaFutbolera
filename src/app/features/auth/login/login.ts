@@ -71,17 +71,18 @@ import { AuthService } from '../../../core/auth.service';
     }
     .hero { text-align: center; }
     .logo {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: var(--color-background-success);
-      color: var(--color-text-success);
+      width: 76px;
+      height: 76px;
+      border-radius: 26px;
+      background: var(--grad-brand);
+      color: var(--color-brand-contrast);
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+      box-shadow: var(--glow-brand);
     }
-    .logo i { font-size: 36px; }
+    .logo i { font-size: 42px; }
     h1 { margin: 0; font-size: 28px; font-weight: 600; color: var(--color-text-primary); }
     .tag { margin: 6px 0 0; font-size: 14px; color: var(--color-text-secondary); }
     .card {

@@ -29,25 +29,32 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     .nav {
       display: flex;
       justify-content: space-around;
-      border-top: 0.5px solid var(--color-border-tertiary);
+      gap: 2px;
+      margin: 0 10px calc(10px + env(safe-area-inset-bottom));
+      padding: 7px 6px;
       background: var(--color-background-primary);
-      padding: 10px 0 calc(12px + env(safe-area-inset-bottom));
+      border: 1px solid var(--color-border-tertiary);
+      border-radius: 24px;
+      box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.55);
     }
     .nav-i {
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 3px;
-      font-size: 11px;
+      gap: 2px;
+      font-size: 10.5px;
+      font-weight: 600;
       color: var(--color-text-tertiary);
       text-decoration: none;
       flex: 1;
-      min-height: 44px;
+      min-height: 46px;
       justify-content: center;
-      transition: color 150ms cubic-bezier(0, 0, 0.2, 1);
+      border-radius: 16px;
+      padding: 5px 2px;
+      transition: color 150ms cubic-bezier(0, 0, 0.2, 1), background-color 150ms cubic-bezier(0, 0, 0.2, 1);
     }
-    .nav-i i { font-size: 21px; }
-    .nav-i.on { color: var(--color-text-success); }
+    .nav-i i { font-size: 20px; }
+    .nav-i.on { color: var(--color-text-success); background: var(--color-background-success); }
   `,
 })
 export class BottomNav {}

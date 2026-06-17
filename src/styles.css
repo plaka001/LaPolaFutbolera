@@ -6,54 +6,51 @@
 @tailwind utilities;
 
 /* =====================================================================
-   La Pola Futbolera — identidad "estadio de noche".
-   Dark protagonista (carbón verdoso + verde reflector que brilla);
-   light "cancha de día" en papel frío. Tokens estables (mismos nombres),
-   valores intencionales. Mobile-first, futbolero, accesible.
+   La Pola Futbolera — "neón de estadio" (rediseño).
+   Dark protagonista con glow de reflectores, verde en degradé, ámbar de
+   premios, esquinas redondeadas y profundidad. Soporta claro/oscuro.
    ===================================================================== */
 :root {
-  /* superficies (cancha de día) */
   --color-background-primary: #ffffff;
-  --color-background-secondary: #e7ece7;
-  --color-background-tertiary: #edf2ee;
-  --color-background-info: #e4eefb;
-  --color-background-success: #ddf3e6;
-  --color-background-warning: #f9edd6;
-  --color-background-danger: #fce9e9;
+  --color-background-secondary: #eef2ee;
+  --color-background-tertiary: #e8eee9;
+  --color-background-info: #e5eefb;
+  --color-background-success: #dbf5e5;
+  --color-background-warning: #fbedd0;
+  --color-background-danger: #fce7e7;
 
-  /* texto */
-  --color-text-primary: #13201a;
-  --color-text-secondary: #4f5b54;
-  --color-text-tertiary: #7c887f;
-  --color-text-info: #18599b;
-  --color-text-success: #0c7a3e;
-  --color-text-warning: #8a5206;
-  --color-text-danger: #b4302f;
+  --color-text-primary: #10201a;
+  --color-text-secondary: #4a5950;
+  --color-text-tertiary: #78877d;
+  --color-text-info: #176bb3;
+  --color-text-success: #0a7d3f;
+  --color-text-warning: #8f560a;
+  --color-text-danger: #c23434;
 
-  /* bordes (negro verdoso) */
-  --color-border-tertiary: rgba(15, 40, 28, 0.12);
-  --color-border-secondary: rgba(15, 40, 28, 0.2);
-  --color-border-primary: rgba(15, 40, 28, 0.32);
+  --color-border-tertiary: rgba(15, 40, 28, 0.1);
+  --color-border-secondary: rgba(15, 40, 28, 0.18);
+  --color-border-primary: rgba(15, 40, 28, 0.3);
   --color-border-info: #8fbce6;
-  --color-border-success: #84cfa0;
-  --color-border-warning: #e6b15a;
+  --color-border-success: #7ad29b;
+  --color-border-warning: #e9b659;
   --color-border-danger: #e89a9a;
 
-  /* marca (verde cancha) */
-  --color-brand: #0c7a3e;
-  --color-brand-strong: #0a6a36;
+  --color-brand: #0c9a4e;
+  --color-brand-strong: #0a8444;
   --color-brand-contrast: #ffffff;
-  --color-backdrop: #e3e8e3;
+  --color-accent: #d8901a; /* ámbar (pozo / premios) */
 
-  /* señas de identidad */
-  --color-pitch-line: rgba(15, 40, 28, 0.1);
-  --color-glow: transparent;
-  --shadow-card: 0 1px 2px rgba(15, 40, 28, 0.06), 0 8px 24px rgba(15, 40, 28, 0.05);
+  --grad-brand: linear-gradient(135deg, #16b85f 0%, #0c9a4e 100%);
+  --grad-app: linear-gradient(170deg, #eef3ee 0%, #e3eae5 70%);
+  --glow-brand: 0 10px 26px -8px rgba(12, 154, 78, 0.4);
+  --color-pitch-line: rgba(15, 40, 28, 0.08);
+  --shadow-card: 0 1px 2px rgba(15, 40, 28, 0.05), 0 14px 30px -16px rgba(15, 40, 28, 0.2);
+  --color-backdrop: #dde4de;
 
-  --border-radius-md: 8px;
-  --border-radius-lg: 12px;
-  --border-radius-xl: 16px;
-  --border-radius-2xl: 22px;
+  --border-radius-md: 10px;
+  --border-radius-lg: 14px;
+  --border-radius-xl: 18px;
+  --border-radius-2xl: 26px;
 
   --font-sans: 'Plus Jakarta Sans Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Archivo Variable', system-ui, sans-serif;
@@ -63,38 +60,41 @@
 /* Tema oscuro: estadio de noche bajo reflectores. */
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-background-primary: #15211b;
-    --color-background-secondary: #111a15;
-    --color-background-tertiary: #0b1310;
-    --color-background-info: #122a3f;
-    --color-background-success: #0e2c1e;
-    --color-background-warning: #2e2410;
+    --color-background-primary: #18271f;
+    --color-background-secondary: #101c16;
+    --color-background-tertiary: #0a130f;
+    --color-background-info: #112a40;
+    --color-background-success: #103025;
+    --color-background-warning: #2c2410;
     --color-background-danger: #341a1a;
 
-    --color-text-primary: #eaf2ec;
-    --color-text-secondary: #9fb1a6;
-    --color-text-tertiary: #6a7c71;
-    --color-text-info: #6cb8ff;
-    --color-text-success: #3fe080;
-    --color-text-warning: #f2b53b;
+    --color-text-primary: #eaf5ee;
+    --color-text-secondary: #9fb4a8;
+    --color-text-tertiary: #63786d;
+    --color-text-info: #5cc8ff;
+    --color-text-success: #38e07e;
+    --color-text-warning: #fbbf3c;
     --color-text-danger: #ff7a7a;
 
-    --color-border-tertiary: rgba(255, 255, 255, 0.09);
+    --color-border-tertiary: rgba(255, 255, 255, 0.08);
     --color-border-secondary: rgba(255, 255, 255, 0.16);
     --color-border-primary: rgba(255, 255, 255, 0.26);
     --color-border-info: #2c5780;
-    --color-border-success: #2a6b48;
-    --color-border-warning: #6f521d;
-    --color-border-danger: #7e3b3b;
+    --color-border-success: #2f6e4b;
+    --color-border-warning: #7a5a1e;
+    --color-border-danger: #8a3b3b;
 
     --color-brand: #2fd673;
     --color-brand-strong: #38e07e;
     --color-brand-contrast: #06160d;
-    --color-backdrop: #060d09;
+    --color-accent: #fbbf3c;
 
-    --color-pitch-line: rgba(120, 230, 170, 0.08);
-    --color-glow: rgba(60, 224, 128, 0.22);
-    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.35);
+    --grad-brand: linear-gradient(135deg, #34e07b 0%, #11b07a 100%);
+    --grad-app: linear-gradient(170deg, #0e1a15 0%, #080c0a 65%);
+    --glow-brand: 0 10px 30px -8px rgba(52, 224, 123, 0.38);
+    --color-pitch-line: rgba(120, 230, 170, 0.1);
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 18px 36px -18px rgba(0, 0, 0, 0.65);
+    --color-backdrop: #050907;
   }
 }
 
@@ -102,24 +102,25 @@
   box-sizing: border-box;
 }
 
-/* App móvil: el scroll funciona (rueda/dedo/teclado) pero sin barra visible,
-   como en el celular. Evita la barra fea en pantallas largas (ej. Crear polla). */
+/* App móvil: scroll sin barra visible. */
 * {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* Edge legacy */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 *::-webkit-scrollbar {
   width: 0;
   height: 0;
-  display: none; /* Chrome / Edge / Safari */
+  display: none;
 }
+
 html,
 body {
   height: 100%;
 }
 body {
   margin: 0;
-  background: var(--color-background-tertiary);
+  background: var(--grad-app);
+  background-attachment: fixed;
   color: var(--color-text-primary);
   font-family: var(--font-sans);
   line-height: 1.5;
@@ -127,13 +128,11 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overscroll-behavior-y: none;
-  /* El scroll vive DENTRO del contenido de cada pantalla, nunca en la ventana. */
   overflow: hidden;
   padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
 }
 
-/* Hosts a nivel de ruta como bloque full-width: así la columna de 480px
-   se CENTRA (margin:auto) y no queda pegada a la izquierda con hueco a la derecha. */
+/* Hosts de ruta como bloque full-width → la columna de 480px se centra. */
 app-root,
 app-login,
 app-callback,
@@ -141,18 +140,11 @@ app-shell {
   display: block;
 }
 
-/* En pantalla ancha: columna móvil centrada sobre un fondo apenas más oscuro. */
-@media (min-width: 520px) {
-  body {
-    background: var(--color-backdrop);
-  }
-}
-
 h1, h2, h3, .display {
   font-family: var(--font-display);
   font-weight: 700;
   letter-spacing: -0.02em;
-  line-height: 1.15;
+  line-height: 1.12;
 }
 
 /* Cifras tipo marcador (tabular). */
@@ -162,14 +154,13 @@ h1, h2, h3, .display {
   font-feature-settings: 'tnum' 1;
 }
 
-/* Foco visible y accesible (WCAG). */
 :focus-visible {
-  outline: 2px solid var(--color-text-success);
+  outline: 2px solid var(--color-brand);
   outline-offset: 2px;
-  border-radius: 6px;
+  border-radius: 8px;
 }
 
-/* Seña de identidad: líneas de cancha (círculo central + línea media). */
+/* Seña de identidad: líneas de cancha. */
 .pitch-bg {
   position: relative;
   overflow: hidden;
@@ -184,7 +175,6 @@ h1, h2, h3, .display {
   background-size: 100% 100%, 100% 1px;
   background-position: center -70px, center top;
   background-repeat: no-repeat;
-  opacity: 0.9;
   pointer-events: none;
 }
 
@@ -192,9 +182,10 @@ h1, h2, h3, .display {
 @layer components {
   .lp-card {
     background: var(--color-background-primary);
-    border: 0.5px solid var(--color-border-tertiary);
-    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-xl);
     box-shadow: var(--shadow-card);
+    animation: lp-rise 0.34s cubic-bezier(0, 0, 0.2, 1) both;
   }
   .lp-label {
     display: block;
@@ -205,18 +196,19 @@ h1, h2, h3, .display {
   .lp-input {
     width: 100%;
     box-sizing: border-box;
-    border: 0.5px solid var(--color-border-secondary);
+    border: 1px solid var(--color-border-secondary);
     border-radius: var(--border-radius-md);
-    padding: 11px;
+    padding: 12px;
     font-size: 14px;
     font-family: inherit;
     color: var(--color-text-primary);
     background: var(--color-background-primary);
     outline: none;
-    transition: border-color 150ms cubic-bezier(0, 0, 0.2, 1);
+    transition: border-color 150ms cubic-bezier(0, 0, 0.2, 1), box-shadow 150ms cubic-bezier(0, 0, 0.2, 1);
   }
   .lp-input:focus {
-    border-color: var(--color-border-success);
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-brand) 22%, transparent);
   }
   .lp-btn {
     display: inline-flex;
@@ -224,32 +216,32 @@ h1, h2, h3, .display {
     justify-content: center;
     gap: 8px;
     border-radius: var(--border-radius-md);
-    padding: 12px 14px;
+    padding: 13px 16px;
     font-size: 14.5px;
-    font-weight: 600;
+    font-weight: 700;
     font-family: inherit;
     cursor: pointer;
-    border: 0.5px solid transparent;
+    border: 1px solid transparent;
     transition:
-      transform 100ms cubic-bezier(0, 0, 0.2, 1),
-      background-color 150ms cubic-bezier(0, 0, 0.2, 1),
-      border-color 150ms cubic-bezier(0, 0, 0.2, 1);
+      transform 110ms cubic-bezier(0, 0, 0.2, 1),
+      filter 150ms cubic-bezier(0, 0, 0.2, 1),
+      background-color 150ms cubic-bezier(0, 0, 0.2, 1);
   }
   .lp-btn:active {
-    transform: scale(0.98);
+    transform: scale(0.97);
   }
   .lp-btn:disabled {
     opacity: 0.55;
     cursor: default;
   }
   .lp-btn-primary {
-    background: var(--color-brand);
+    background: var(--grad-brand);
     color: var(--color-brand-contrast);
-    box-shadow: 0 0 0 0 var(--color-glow);
+    box-shadow: var(--glow-brand);
+    border: none;
   }
   .lp-btn-primary:not(:disabled):hover {
-    background: var(--color-brand-strong);
-    box-shadow: 0 6px 22px var(--color-glow);
+    filter: brightness(1.06);
   }
   .lp-btn-ghost {
     background: var(--color-background-primary);
@@ -258,8 +250,8 @@ h1, h2, h3, .display {
   }
   .lp-pill {
     font-size: 11.5px;
-    font-weight: 600;
-    padding: 4px 9px;
+    font-weight: 700;
+    padding: 5px 11px;
     border-radius: 999px;
     display: inline-flex;
     align-items: center;
@@ -271,6 +263,14 @@ h1, h2, h3, .display {
   .lp-pill.neutral { background: var(--color-background-secondary); color: var(--color-text-secondary); }
 }
 
+@keyframes lp-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes lp-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.7); }
+}
 .spin {
   animation: lp-spin 0.9s linear infinite;
 }
@@ -280,9 +280,7 @@ h1, h2, h3, .display {
 
 /* Respeta reduce-motion (a11y). */
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

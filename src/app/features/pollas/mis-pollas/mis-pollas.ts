@@ -103,17 +103,13 @@ import { PollaContextService } from '../../../core/polla-context.service';
       align-items: center;
       justify-content: space-between;
       padding: 14px;
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      background: linear-gradient(var(--color-background-tertiary) 70%, transparent);
     }
     .brand { display: flex; align-items: center; gap: 9px; }
     .logo {
-      width: 32px; height: 32px; border-radius: 50%;
-      background: var(--color-background-success); color: var(--color-text-success);
+      width: 34px; height: 34px; border-radius: 11px;
+      background: var(--grad-brand); color: var(--color-brand-contrast);
       display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 0 0 1px var(--color-border-success) inset;
+      box-shadow: var(--glow-brand);
     }
     .logo i { font-size: 19px; }
     .word { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--color-text-primary); }
