@@ -1,0 +1,290 @@
+@import '@fontsource-variable/archivo/index.css';
+@import '@fontsource-variable/plus-jakarta-sans/index.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =====================================================================
+   La Pola Futbolera — identidad "estadio de noche".
+   Dark protagonista (carbón verdoso + verde reflector que brilla);
+   light "cancha de día" en papel frío. Tokens estables (mismos nombres),
+   valores intencionales. Mobile-first, futbolero, accesible.
+   ===================================================================== */
+:root {
+  /* superficies (cancha de día) */
+  --color-background-primary: #ffffff;
+  --color-background-secondary: #e7ece7;
+  --color-background-tertiary: #edf2ee;
+  --color-background-info: #e4eefb;
+  --color-background-success: #ddf3e6;
+  --color-background-warning: #f9edd6;
+  --color-background-danger: #fce9e9;
+
+  /* texto */
+  --color-text-primary: #13201a;
+  --color-text-secondary: #4f5b54;
+  --color-text-tertiary: #7c887f;
+  --color-text-info: #18599b;
+  --color-text-success: #0c7a3e;
+  --color-text-warning: #8a5206;
+  --color-text-danger: #b4302f;
+
+  /* bordes (negro verdoso) */
+  --color-border-tertiary: rgba(15, 40, 28, 0.12);
+  --color-border-secondary: rgba(15, 40, 28, 0.2);
+  --color-border-primary: rgba(15, 40, 28, 0.32);
+  --color-border-info: #8fbce6;
+  --color-border-success: #84cfa0;
+  --color-border-warning: #e6b15a;
+  --color-border-danger: #e89a9a;
+
+  /* marca (verde cancha) */
+  --color-brand: #0c7a3e;
+  --color-brand-strong: #0a6a36;
+  --color-brand-contrast: #ffffff;
+  --color-backdrop: #e3e8e3;
+
+  /* señas de identidad */
+  --color-pitch-line: rgba(15, 40, 28, 0.1);
+  --color-glow: transparent;
+  --shadow-card: 0 1px 2px rgba(15, 40, 28, 0.06), 0 8px 24px rgba(15, 40, 28, 0.05);
+
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+  --border-radius-xl: 16px;
+  --border-radius-2xl: 22px;
+
+  --font-sans: 'Plus Jakarta Sans Variable', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Archivo Variable', system-ui, sans-serif;
+  --font-mono: ui-monospace, Consolas, monospace;
+}
+
+/* Tema oscuro: estadio de noche bajo reflectores. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background-primary: #15211b;
+    --color-background-secondary: #111a15;
+    --color-background-tertiary: #0b1310;
+    --color-background-info: #122a3f;
+    --color-background-success: #0e2c1e;
+    --color-background-warning: #2e2410;
+    --color-background-danger: #341a1a;
+
+    --color-text-primary: #eaf2ec;
+    --color-text-secondary: #9fb1a6;
+    --color-text-tertiary: #6a7c71;
+    --color-text-info: #6cb8ff;
+    --color-text-success: #3fe080;
+    --color-text-warning: #f2b53b;
+    --color-text-danger: #ff7a7a;
+
+    --color-border-tertiary: rgba(255, 255, 255, 0.09);
+    --color-border-secondary: rgba(255, 255, 255, 0.16);
+    --color-border-primary: rgba(255, 255, 255, 0.26);
+    --color-border-info: #2c5780;
+    --color-border-success: #2a6b48;
+    --color-border-warning: #6f521d;
+    --color-border-danger: #7e3b3b;
+
+    --color-brand: #2fd673;
+    --color-brand-strong: #38e07e;
+    --color-brand-contrast: #06160d;
+    --color-backdrop: #060d09;
+
+    --color-pitch-line: rgba(120, 230, 170, 0.08);
+    --color-glow: rgba(60, 224, 128, 0.22);
+    --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(0, 0, 0, 0.35);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* App móvil: el scroll funciona (rueda/dedo/teclado) pero sin barra visible,
+   como en el celular. Evita la barra fea en pantallas largas (ej. Crear polla). */
+* {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Edge legacy */
+}
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none; /* Chrome / Edge / Safari */
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: var(--color-background-tertiary);
+  color: var(--color-text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.5;
+  color-scheme: light dark;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overscroll-behavior-y: none;
+  /* El scroll vive DENTRO del contenido de cada pantalla, nunca en la ventana. */
+  overflow: hidden;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+}
+
+/* Hosts a nivel de ruta como bloque full-width: así la columna de 480px
+   se CENTRA (margin:auto) y no queda pegada a la izquierda con hueco a la derecha. */
+app-root,
+app-login,
+app-callback,
+app-shell {
+  display: block;
+}
+
+/* En pantalla ancha: columna móvil centrada sobre un fondo apenas más oscuro. */
+@media (min-width: 520px) {
+  body {
+    background: var(--color-backdrop);
+  }
+}
+
+h1, h2, h3, .display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+/* Cifras tipo marcador (tabular). */
+.tnum {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* Foco visible y accesible (WCAG). */
+:focus-visible {
+  outline: 2px solid var(--color-text-success);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* Seña de identidad: líneas de cancha (círculo central + línea media). */
+.pitch-bg {
+  position: relative;
+  overflow: hidden;
+}
+.pitch-bg::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 50% 0%, transparent 70px, var(--color-pitch-line) 71px, transparent 73px),
+    linear-gradient(var(--color-pitch-line), var(--color-pitch-line));
+  background-size: 100% 100%, 100% 1px;
+  background-position: center -70px, center top;
+  background-repeat: no-repeat;
+  opacity: 0.9;
+  pointer-events: none;
+}
+
+/* ---- Primitivas reutilizables ---- */
+@layer components {
+  .lp-card {
+    background: var(--color-background-primary);
+    border: 0.5px solid var(--color-border-tertiary);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-card);
+  }
+  .lp-label {
+    display: block;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-bottom: 5px;
+  }
+  .lp-input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 0.5px solid var(--color-border-secondary);
+    border-radius: var(--border-radius-md);
+    padding: 11px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--color-text-primary);
+    background: var(--color-background-primary);
+    outline: none;
+    transition: border-color 150ms cubic-bezier(0, 0, 0.2, 1);
+  }
+  .lp-input:focus {
+    border-color: var(--color-border-success);
+  }
+  .lp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border-radius: var(--border-radius-md);
+    padding: 12px 14px;
+    font-size: 14.5px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    border: 0.5px solid transparent;
+    transition:
+      transform 100ms cubic-bezier(0, 0, 0.2, 1),
+      background-color 150ms cubic-bezier(0, 0, 0.2, 1),
+      border-color 150ms cubic-bezier(0, 0, 0.2, 1);
+  }
+  .lp-btn:active {
+    transform: scale(0.98);
+  }
+  .lp-btn:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+  .lp-btn-primary {
+    background: var(--color-brand);
+    color: var(--color-brand-contrast);
+    box-shadow: 0 0 0 0 var(--color-glow);
+  }
+  .lp-btn-primary:not(:disabled):hover {
+    background: var(--color-brand-strong);
+    box-shadow: 0 6px 22px var(--color-glow);
+  }
+  .lp-btn-ghost {
+    background: var(--color-background-primary);
+    border-color: var(--color-border-secondary);
+    color: var(--color-text-primary);
+  }
+  .lp-pill {
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 9px;
+    border-radius: 999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .lp-pill.ok { background: var(--color-background-success); color: var(--color-text-success); }
+  .lp-pill.warn { background: var(--color-background-warning); color: var(--color-text-warning); }
+  .lp-pill.info { background: var(--color-background-info); color: var(--color-text-info); }
+  .lp-pill.neutral { background: var(--color-background-secondary); color: var(--color-text-secondary); }
+}
+
+.spin {
+  animation: lp-spin 0.9s linear infinite;
+}
+@keyframes lp-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Respeta reduce-motion (a11y). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

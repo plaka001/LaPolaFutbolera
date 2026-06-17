@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Pola Futbolera · Tabla de posiciones</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<style>
+:root{
+  --color-background-primary:#ffffff;--color-background-secondary:#f3f1ea;--color-background-tertiary:#eae7df;
+  --color-background-info:#e6f1fb;--color-background-success:#e4f4ea;--color-background-warning:#faeeda;--color-background-danger:#fcebeb;
+  --color-text-primary:#1b1b19;--color-text-secondary:#5f5e5a;--color-text-tertiary:#8a8983;
+  --color-text-info:#185fa5;--color-text-success:#1f8a4c;--color-text-warning:#8a5206;--color-text-danger:#a32d2d;
+  --color-border-tertiary:rgba(0,0,0,.12);--color-border-secondary:rgba(0,0,0,.20);--color-border-primary:rgba(0,0,0,.30);
+  --color-border-info:#85b7eb;--color-border-success:#8fcf9f;--color-border-warning:#efb054;--color-border-danger:#f09595;
+  --border-radius-md:8px;--border-radius-lg:12px;--border-radius-xl:16px;
+  --font-sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-mono:ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--color-background-tertiary);font-family:var(--font-sans);display:flex;justify-content:center;padding:24px}
+.ph{width:380px;max-width:100%;background:var(--color-background-tertiary);border:0.5px solid var(--color-border-secondary);border-radius:38px;overflow:hidden;font-family:var(--font-sans)}
+.wrap{padding:0 14px 8px}
+.seg{flex:1;text-align:center;font-size:13px;color:var(--color-text-secondary);padding:7px 0;border-radius:var(--border-radius-md);cursor:pointer}
+.seg.on{background:var(--color-background-success);color:var(--color-text-success);font-weight:500}
+.pod{display:grid;grid-template-columns:1fr 1.12fr 1fr;gap:8px;align-items:end;margin:2px 0 14px}
+.pcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px 6px 14px;text-align:center}
+.pcard.first{border:2px solid var(--color-border-warning)}
+.pcard.you{border:2px solid var(--color-border-info)}
+.pav{width:46px;height:46px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:500}
+.pname{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.ppts{font-size:16px;font-weight:500;color:var(--color-text-primary);margin-top:1px}
+.ppts small{font-size:10px;color:var(--color-text-tertiary);font-weight:400}
+.medal{font-size:11px;font-weight:500;padding:2px 9px;border-radius:999px;display:inline-block;margin-top:6px}
+.mvp{font-size:11px;display:inline-flex;align-items:center;gap:1px;margin-top:5px;justify-content:center}
+.up{color:var(--color-text-success)}.down{color:var(--color-text-danger)}.same{color:var(--color-text-tertiary)}
+.banner{display:flex;align-items:center;gap:8px;border-radius:var(--border-radius-md);padding:9px 11px;margin-bottom:12px;font-size:12.5px}
+.banner i{font-size:18px}
+.lrow{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--border-radius-md);margin-bottom:6px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary)}
+.lrow.you{background:var(--color-background-info);border-color:var(--color-border-info)}
+.rank{font-size:14px;font-weight:500;color:var(--color-text-secondary);width:16px;text-align:center}
+.mv{font-size:11px;display:flex;align-items:center;gap:1px;width:24px}
+.mv i{font-size:13px}
+.av{width:34px;height:34px;border-radius:50%;background:var(--color-background-secondary);border:0.5px solid var(--color-border-secondary);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:var(--color-text-primary);flex-shrink:0}
+.nm{font-size:13.5px;font-weight:500;color:var(--color-text-primary);display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.sub{font-size:11px;color:var(--color-text-secondary)}
+.tot{font-size:17px;font-weight:500;color:var(--color-text-primary);line-height:1}
+.flame{color:var(--color-text-warning);font-size:11px;display:inline-flex;align-items:center;gap:3px}
+.flame i{font-size:13px}
+.nav{display:flex;justify-content:space-around;border-top:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);padding:10px 0 12px}
+.nav-i{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;color:var(--color-text-tertiary);cursor:pointer}
+.nav-i i{font-size:21px}
+.nav-i.on{color:var(--color-text-success)}
+</style>
+</head>
+<body>
+<div class="ph">
+  <div style="width:120px;height:6px;border-radius:999px;background:var(--color-border-secondary);margin:10px auto 0"></div>
+  <div class="wrap">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0 10px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:30px;height:30px;border-radius:50%;background:var(--color-background-success);display:flex;align-items:center;justify-content:center;color:var(--color-text-success)"><i class="ti ti-ball-football" style="font-size:18px"></i></div>
+        <span style="font-size:15px;font-weight:500;color:var(--color-text-primary)">La Pola Futbolera</span>
+      </div>
+      <div style="width:30px;height:30px;border-radius:50%;background:var(--color-background-info);color:var(--color-text-info);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500">MA</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:7px">
+      <i class="ti ti-list-numbers" style="font-size:18px;color:var(--color-text-warning)"></i>
+      <span style="font-size:18px;font-weight:500;color:var(--color-text-primary)">Tabla de posiciones</span>
+    </div>
+    <div style="font-size:12.5px;color:var(--color-text-secondary);margin:3px 0 12px">Polla Mundial 2026 · 12 jugadores</div>
+
+    <div style="display:flex;gap:4px;background:var(--color-background-secondary);padding:4px;border-radius:var(--border-radius-md);margin-bottom:14px">
+      <div class="seg on">General</div>
+      <div class="seg">Esta fecha</div>
+    </div>
+
+    <div class="pod">
+      <div class="pcard you">
+        <div class="pav" style="background:var(--color-background-info);color:var(--color-text-info)">MA</div>
+        <div class="pname">Vos</div>
+        <div class="ppts">47 <small>pts</small></div>
+        <span class="medal" style="background:var(--color-background-info);color:var(--color-text-info)">2°</span>
+        <div class="mvp up"><i class="ti ti-chevron-up"></i>1</div>
+      </div>
+      <div class="pcard first">
+        <i class="ti ti-crown" style="color:var(--color-text-warning);font-size:20px"></i>
+        <div class="pav" style="background:var(--color-background-warning);color:var(--color-text-warning)">YE</div>
+        <div class="pname">Yeison</div>
+        <div class="ppts">52 <small>pts</small></div>
+        <span class="medal" style="background:var(--color-background-warning);color:var(--color-text-warning)">1°</span>
+        <div class="mvp same"><i class="ti ti-minus"></i></div>
+      </div>
+      <div class="pcard">
+        <div class="pav" style="background:var(--color-background-secondary);color:var(--color-text-primary)">AN</div>
+        <div class="pname">Andrés</div>
+        <div class="ppts">45 <small>pts</small></div>
+        <span class="medal" style="background:var(--color-background-secondary);color:var(--color-text-secondary)">3°</span>
+        <div class="mvp down"><i class="ti ti-chevron-down"></i>1</div>
+      </div>
+    </div>
+
+    <div class="banner" style="background:var(--color-background-warning)">
+      <i class="ti ti-trophy" style="color:var(--color-text-warning)"></i>
+      <span style="color:var(--color-text-warning)">Yeison va ganando el pozo · $480.000</span>
+    </div>
+    <div class="banner" style="background:var(--color-background-info);border:0.5px solid var(--color-border-info)">
+      <i class="ti ti-target" style="color:var(--color-text-info)"></i>
+      <span style="color:var(--color-text-info)">Vas 2° · a solo 5 pts de Yeison · subiste 1 puesto esta fecha</span>
+    </div>
+
+    <div class="lrow">
+      <span class="rank">4</span>
+      <span class="mv up"><i class="ti ti-chevron-up"></i>2</span>
+      <div class="av">CA</div>
+      <div style="flex:1">
+        <div class="nm">Camila <span class="flame"><i class="ti ti-flame"></i> racha x3</span></div>
+        <div class="sub">+14 esta fecha · la más caliente</div>
+      </div>
+      <div style="text-align:right"><div class="tot">41</div><div class="sub">pts</div></div>
+    </div>
+    <div class="lrow">
+      <span class="rank">5</span>
+      <span class="mv same"><i class="ti ti-minus"></i></span>
+      <div class="av">JU</div>
+      <div style="flex:1"><div class="nm">Julián</div><div class="sub">+6 esta fecha</div></div>
+      <div style="text-align:right"><div class="tot">38</div><div class="sub">pts</div></div>
+    </div>
+    <div class="lrow">
+      <span class="rank">6</span>
+      <span class="mv down"><i class="ti ti-chevron-down"></i>1</span>
+      <div class="av">TA</div>
+      <div style="flex:1"><div class="nm">Tatiana</div><div class="sub">+3 esta fecha</div></div>
+      <div style="text-align:right"><div class="tot">35</div><div class="sub">pts</div></div>
+    </div>
+    <div class="lrow">
+      <span class="rank">7</span>
+      <span class="mv up"><i class="ti ti-chevron-up"></i>1</span>
+      <div class="av">DI</div>
+      <div style="flex:1"><div class="nm">Diego</div><div class="sub">+9 esta fecha</div></div>
+      <div style="text-align:right"><div class="tot">31</div><div class="sub">pts</div></div>
+    </div>
+    <div class="lrow">
+      <span class="rank">8</span>
+      <span class="mv down"><i class="ti ti-chevron-down"></i>2</span>
+      <div class="av">LA</div>
+      <div style="flex:1"><div class="nm">Laura</div><div class="sub">+1 esta fecha · se enfrió</div></div>
+      <div style="text-align:right"><div class="tot">28</div><div class="sub">pts</div></div>
+    </div>
+
+    <div style="text-align:center;margin:10px 0 4px"><span style="font-size:12px;color:var(--color-text-info);cursor:pointer">Ver los 12 jugadores</span></div>
+  </div>
+  <div class="nav">
+    <div class="nav-i"><i class="ti ti-ball-football"></i><span>Partidos</span></div>
+    <div class="nav-i on"><i class="ti ti-list-numbers"></i><span>Tabla</span></div>
+    <div class="nav-i"><i class="ti ti-coin"></i><span>Pozo</span></div>
+    <div class="nav-i"><i class="ti ti-user"></i><span>Perfil</span></div>
+  </div>
+</div>
+<script>
+(function(){
+  document.querySelectorAll('.seg').forEach(function(s){
+    s.addEventListener('click',function(){document.querySelectorAll('.seg').forEach(function(x){x.classList.remove('on');});s.classList.add('on');});
+  });
+  document.querySelectorAll('.nav-i').forEach(function(n){
+    n.addEventListener('click',function(){document.querySelectorAll('.nav-i').forEach(function(x){x.classList.remove('on');});n.classList.add('on');});
+  });
+})();
+</script>
+</body>
+</html>

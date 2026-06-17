@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Pola Futbolera · Crear polla</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3/dist/tabler-icons.min.css">
+<style>
+:root{
+  --color-background-primary:#ffffff;--color-background-secondary:#f3f1ea;--color-background-tertiary:#eae7df;
+  --color-background-info:#e6f1fb;--color-background-success:#e4f4ea;--color-background-warning:#faeeda;--color-background-danger:#fcebeb;
+  --color-text-primary:#1b1b19;--color-text-secondary:#5f5e5a;--color-text-tertiary:#8a8983;
+  --color-text-info:#185fa5;--color-text-success:#1f8a4c;--color-text-warning:#8a5206;--color-text-danger:#a32d2d;
+  --color-border-tertiary:rgba(0,0,0,.12);--color-border-secondary:rgba(0,0,0,.20);--color-border-primary:rgba(0,0,0,.30);
+  --color-border-info:#85b7eb;--color-border-success:#8fcf9f;--color-border-warning:#efb054;--color-border-danger:#f09595;
+  --border-radius-md:8px;--border-radius-lg:12px;--border-radius-xl:16px;
+  --font-sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--font-mono:ui-monospace,Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--color-background-tertiary);font-family:var(--font-sans);display:flex;justify-content:center;padding:24px}
+.ph{width:380px;max-width:100%;background:var(--color-background-tertiary);border:0.5px solid var(--color-border-secondary);border-radius:38px;overflow:hidden;font-family:var(--font-sans)}
+.wrap{padding:0 14px 16px}
+.sec{margin-bottom:14px}
+.seclab{font-size:12px;color:var(--color-text-secondary);margin:0 2px 7px;display:flex;align-items:center;gap:6px}
+.seclab i{font-size:15px}
+.fcard{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:12px}
+.flab{font-size:12px;color:var(--color-text-secondary);margin-bottom:5px;display:block}
+.inp{width:100%;box-sizing:border-box;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:9px 11px;font-size:13.5px;font-family:inherit;color:var(--color-text-primary);background:var(--color-background-primary);outline:none}
+.selbtn{display:flex;align-items:center;justify-content:space-between;width:100%;box-sizing:border-box;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:9px 11px;background:var(--color-background-primary);cursor:pointer;font-size:13.5px;color:var(--color-text-primary)}
+.selbtn .l{display:flex;align-items:center;gap:8px}
+.chip2{font-size:12px;padding:6px 10px;border-radius:999px;border:0.5px solid var(--color-border-tertiary);color:var(--color-text-secondary);cursor:pointer;white-space:nowrap}
+.chip2.on{background:var(--color-background-success);color:var(--color-text-success);border-color:var(--color-border-success);font-weight:500}
+.opt{flex:1;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 4px;text-align:center;cursor:pointer}
+.opt.on{border:2px solid var(--color-border-success);background:var(--color-background-success)}
+.opt i{font-size:20px;color:var(--color-text-secondary)}
+.opt.on i{color:var(--color-text-success)}
+.opt .t{font-size:11px;margin-top:5px;color:var(--color-text-primary);line-height:1.25}
+.opt.on .t{color:var(--color-text-success);font-weight:500}
+.rep{flex:1;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:9px;text-align:center;font-size:12px;cursor:pointer;color:var(--color-text-secondary)}
+.rep.on{border:2px solid var(--color-border-success);background:var(--color-background-success);color:var(--color-text-success);font-weight:500}
+.drop{border:1px dashed var(--color-border-secondary);border-radius:var(--border-radius-md);padding:16px;text-align:center;color:var(--color-text-secondary);cursor:pointer}
+.drop i{font-size:24px}
+.pick{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:10px 11px;cursor:pointer;margin-bottom:8px}
+.pick.on{border:2px solid var(--color-border-success);background:var(--color-background-success)}
+.pt{font-size:13px;font-weight:500;color:var(--color-text-primary);display:flex;align-items:center;justify-content:space-between}
+.pick.on .pt{color:var(--color-text-success)}
+.pd{font-size:11.5px;color:var(--color-text-secondary);margin-top:3px}
+.chk{display:none}.pick.on .chk{display:inline-flex;color:var(--color-text-success)}
+.sw{width:38px;height:22px;border-radius:999px;background:var(--color-border-secondary);position:relative;cursor:pointer;flex-shrink:0}
+.sw.on{background:var(--color-text-success)}
+.sw .k{width:18px;height:18px;border-radius:50%;background:var(--color-background-primary);position:absolute;top:2px;left:2px}
+.sw.on .k{left:18px}
+.btn{border:0.5px solid var(--color-border-secondary);background:var(--color-background-primary);border-radius:var(--border-radius-md);padding:9px 12px;font-size:13px;color:var(--color-text-primary);cursor:pointer;font-family:inherit;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+</style>
+</head>
+<body>
+<div class="ph">
+  <div style="width:120px;height:6px;border-radius:999px;background:var(--color-border-secondary);margin:10px auto 0"></div>
+  <div class="wrap">
+    <div style="display:flex;align-items:center;gap:10px;padding:14px 0 14px">
+      <i class="ti ti-chevron-left" style="font-size:20px;color:var(--color-text-secondary)"></i>
+      <span style="font-size:18px;font-weight:500;color:var(--color-text-primary)">Crear polla</span>
+    </div>
+
+    <div class="sec">
+      <div class="seclab"><i class="ti ti-ball-football"></i> Datos de la polla</div>
+      <div class="fcard">
+        <label class="flab">Nombre</label>
+        <input class="inp" value="Polla Mundial 2026">
+        <label class="flab" style="margin-top:11px">Competición</label>
+        <div class="selbtn"><span class="l"><i class="ti ti-trophy" style="color:var(--color-text-warning)"></i> Copa Mundial 2026</span><i class="ti ti-chevron-down" style="color:var(--color-text-tertiary)"></i></div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:8px">
+          <span class="chip2 on">Mundial 2026</span>
+          <span class="chip2">Liga BetPlay</span>
+          <span class="chip2">Champions</span>
+          <span class="chip2">Libertadores</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="seclab"><i class="ti ti-gift"></i> Premio</div>
+      <div class="fcard">
+        <div style="display:flex;gap:8px">
+          <div class="opt on" data-k="pozo"><i class="ti ti-coins"></i><div class="t">Pozo entre todos</div></div>
+          <div class="opt" data-k="fijo"><i class="ti ti-trophy"></i><div class="t">Premio fijo</div></div>
+          <div class="opt" data-k="sin"><i class="ti ti-mood-smile"></i><div class="t">Sin premio</div></div>
+        </div>
+        <div id="pozo-sub" style="margin-top:12px">
+          <label class="flab">Valor de entrada por persona</label>
+          <div style="display:flex;align-items:center;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:0 11px;background:var(--color-background-primary)">
+            <span style="font-size:13.5px;color:var(--color-text-secondary)">$</span>
+            <input id="valor" value="20.000" inputmode="numeric" style="border:none;background:transparent;padding:9px 8px;font-size:13.5px;color:var(--color-text-primary);width:100%;font-family:inherit;outline:none">
+          </div>
+          <label class="flab" style="margin-top:11px">Reparto del pozo</label>
+          <div style="display:flex;gap:8px">
+            <div class="rep on">Todo al 1°</div>
+            <div class="rep">Top 3 · 70/20/10</div>
+          </div>
+          <div id="pozoprev" style="margin-top:10px;font-size:12px;color:var(--color-text-success);background:var(--color-background-success);border-radius:var(--border-radius-md);padding:8px 10px;display:flex;align-items:center;gap:6px"><i class="ti ti-coins"></i> 12 jugadores × $20.000 = pozo de $240.000</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="seclab"><i class="ti ti-qrcode"></i> Pago</div>
+      <div class="fcard">
+        <label class="flab">QR para que paguen</label>
+        <div class="drop" id="qr-drop">
+          <i class="ti ti-qrcode"></i>
+          <div style="margin-top:6px;font-size:12.5px">Subí el QR de Nequi o Daviplata</div>
+        </div>
+        <label class="flab" style="margin-top:11px">Fecha límite de pago</label>
+        <div class="selbtn"><span class="l"><i class="ti ti-calendar" style="color:var(--color-text-secondary)"></i> Antes del primer partido</span><i class="ti ti-chevron-down" style="color:var(--color-text-tertiary)"></i></div>
+        <div style="font-size:11.5px;color:var(--color-text-secondary);margin-top:7px;display:flex;align-items:center;gap:5px"><i class="ti ti-info-circle"></i> Quien no pague queda bloqueado y se le notifica.</div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="seclab"><i class="ti ti-calculator"></i> Puntaje</div>
+      <div class="fcard">
+        <div class="pick on">
+          <div class="pt">Sistema clásico <i class="ti ti-check chk"></i></div>
+          <div class="pd">5 pts acierto · 2 marcador exacto · 1 diferencia · doble en finales</div>
+        </div>
+        <div class="pick">
+          <div class="pt">Personalizar <i class="ti ti-check chk"></i></div>
+          <div class="pd">Definí tus propios puntos por acierto</div>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px">
+          <div><div style="font-size:13px;color:var(--color-text-primary)">Comodín x2 por fecha</div><div style="font-size:11.5px;color:var(--color-text-secondary)">Cada jugador dobla 1 partido</div></div>
+          <div class="sw on" id="sw-com"><div class="k"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="seclab"><i class="ti ti-lock"></i> Privacidad e invitaciones</div>
+      <div class="fcard">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:13px;color:var(--color-text-primary);display:flex;align-items:center;gap:7px"><i class="ti ti-lock" style="color:var(--color-text-secondary)"></i> Privada · solo por invitación</span>
+          <span style="font-size:11px;color:var(--color-text-secondary);background:var(--color-background-secondary);padding:3px 8px;border-radius:999px">Por ahora</span>
+        </div>
+        <label class="flab" style="margin-top:12px">Link de invitación</label>
+        <div style="display:flex;gap:8px;align-items:center">
+          <div style="flex:1;border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:9px 11px;font-size:13px;color:var(--color-text-secondary);font-family:var(--font-mono);overflow:hidden;white-space:nowrap;text-overflow:ellipsis">pollas.app/u/MUND26</div>
+          <button class="btn" id="copy"><i class="ti ti-copy"></i> Copiar</button>
+        </div>
+        <button class="btn" id="wa" style="width:100%;margin-top:8px"><i class="ti ti-brand-whatsapp"></i> Compartir por WhatsApp</button>
+      </div>
+    </div>
+
+    <button id="crear" style="width:100%;margin-top:4px;border:none;border-radius:var(--border-radius-md);padding:13px;font-size:15px;font-weight:500;background:var(--color-text-success);color:#ffffff;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px"><i class="ti ti-check"></i> Crear polla</button>
+  </div>
+</div>
+<script>
+(function(){
+  function fmt(n){return n.toString().replace(/\B(?=(\d{3})+(?!\d))/g,'.');}
+  var opts=document.querySelectorAll('.opt');
+  var pozoSub=document.getElementById('pozo-sub');
+  opts.forEach(function(o){
+    o.addEventListener('click',function(){
+      opts.forEach(function(x){x.classList.remove('on');});o.classList.add('on');
+      if(pozoSub)pozoSub.style.display=(o.getAttribute('data-k')==='pozo')?'block':'none';
+    });
+  });
+  document.querySelectorAll('.chip2').forEach(function(c){
+    c.addEventListener('click',function(){document.querySelectorAll('.chip2').forEach(function(x){x.classList.remove('on');});c.classList.add('on');});
+  });
+  document.querySelectorAll('.rep').forEach(function(r){
+    r.addEventListener('click',function(){document.querySelectorAll('.rep').forEach(function(x){x.classList.remove('on');});r.classList.add('on');});
+  });
+  var valor=document.getElementById('valor');var prev=document.getElementById('pozoprev');
+  if(valor&&prev){
+    valor.addEventListener('input',function(){
+      var d=parseInt((valor.value||'').replace(/\D/g,'')||'0',10);
+      valor.value=fmt(d);
+      prev.innerHTML='<i class="ti ti-coins"></i> 12 jugadores × $'+fmt(d)+' = pozo de $'+fmt(d*12);
+    });
+  }
+  var drop=document.getElementById('qr-drop');
+  if(drop)drop.addEventListener('click',function(){
+    drop.innerHTML='<i class="ti ti-qrcode" style="font-size:24px;color:var(--color-text-success)"></i><div style="margin-top:6px;font-size:12.5px;color:var(--color-text-success)">QR de Nequi cargado</div>';
+    drop.style.borderStyle='solid';drop.style.borderColor='var(--color-border-success)';
+  });
+  document.querySelectorAll('.pick').forEach(function(p){
+    p.addEventListener('click',function(){document.querySelectorAll('.pick').forEach(function(x){x.classList.remove('on');});p.classList.add('on');});
+  });
+  var sw=document.getElementById('sw-com');
+  if(sw)sw.addEventListener('click',function(){sw.classList.toggle('on');});
+  var copy=document.getElementById('copy');
+  if(copy)copy.addEventListener('click',function(){
+    try{if(navigator.clipboard)navigator.clipboard.writeText('pollas.app/u/MUND26');}catch(e){}
+    copy.innerHTML='<i class="ti ti-check"></i> ¡Copiado!';
+    setTimeout(function(){copy.innerHTML='<i class="ti ti-copy"></i> Copiar';},1300);
+  });
+  var crear=document.getElementById('crear');
+  if(crear)crear.addEventListener('click',function(){crear.innerHTML='<i class="ti ti-check"></i> ¡Polla creada!';});
+})();
+</script>
+</body>
+</html>
