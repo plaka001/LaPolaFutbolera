@@ -4,17 +4,18 @@ import { AuthService } from '../../../core/auth.service';
 import { PollaService, PollaCard } from '../../../core/polla.service';
 import { PollaContextService } from '../../../core/polla-context.service';
 import { NotificationsService } from '../../../core/notifications.service';
+import { Avatar } from '../../../shared/avatar/avatar';
 
 /** Home: las pollas del usuario + accesos a crear y unirse. */
 @Component({
   selector: 'app-mis-pollas',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink],
+  imports: [RouterLink, Avatar],
   template: `
     <div class="page">
       <header class="appbar">
         <div class="brand">
-          <span class="logo"><i class="ti ti-ball-football"></i></span>
+          <span class="logo"><img src="logo-mark.svg" alt="" /></span>
           <span class="word">La Pola Futbolera</span>
         </div>
         <div class="actions">
@@ -22,7 +23,7 @@ import { NotificationsService } from '../../../core/notifications.service';
             <i class="ti ti-bell"></i>
             @if (notif.unread() > 0) { <span class="nbadge">{{ notif.unread() > 9 ? '9+' : notif.unread() }}</span> }
           </a>
-          <a class="avatar" routerLink="/perfil" aria-label="Mi perfil">{{ auth.initials() }}</a>
+          <a class="avatar" routerLink="/perfil" aria-label="Mi perfil"><app-avatar [url]="auth.avatarUrl()" [name]="auth.displayName()" /></a>
         </div>
       </header>
 
@@ -112,20 +113,11 @@ import { NotificationsService } from '../../../core/notifications.service';
       padding: 14px;
     }
     .brand { display: flex; align-items: center; gap: 9px; }
-    .logo {
-      width: 34px; height: 34px; border-radius: 11px;
-      background: var(--grad-brand); color: var(--color-brand-contrast);
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: var(--glow-brand);
-    }
-    .logo i { font-size: 19px; }
+    .logo { width: 36px; height: 36px; display: flex; flex-shrink: 0; }
+    .logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
     .word { font-family: var(--font-display); font-size: 16px; font-weight: 600; color: var(--color-text-primary); }
-    .avatar {
-      width: 32px; height: 32px; border-radius: 50%;
-      background: var(--color-background-info); color: var(--color-text-info);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 12px; font-weight: 600; text-decoration: none;
-    }
+    .avatar { display: flex; text-decoration: none; }
+    .avatar app-avatar { width: 32px; height: 32px; --av-fs: 11px; }
     .actions { display: flex; align-items: center; gap: 6px; }
     .bell { position: relative; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); text-decoration: none; }
     .bell i { font-size: 21px; }

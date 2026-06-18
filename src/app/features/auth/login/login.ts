@@ -8,7 +8,7 @@ import { AuthService } from '../../../core/auth.service';
   template: `
     <div class="login">
       <div class="hero">
-        <span class="logo"><i class="ti ti-ball-football"></i></span>
+        <span class="logo"><img src="logo-mark.svg" alt="La Pola Futbolera" /></span>
         <h1>La Pola Futbolera</h1>
         <p class="tag">Pronosticá con tus amigos. El que sabe, sabe. ⚽</p>
       </div>
@@ -71,18 +71,12 @@ import { AuthService } from '../../../core/auth.service';
     }
     .hero { text-align: center; }
     .logo {
-      width: 76px;
-      height: 76px;
-      border-radius: 26px;
-      background: var(--grad-brand);
-      color: var(--color-brand-contrast);
+      width: 108px;
+      height: 108px;
       display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 14px;
-      box-shadow: var(--glow-brand);
+      margin-bottom: 10px;
     }
-    .logo i { font-size: 42px; }
+    .logo img { width: 100%; height: 100%; object-fit: contain; display: block; filter: drop-shadow(0 6px 18px rgba(0,0,0,0.18)); }
     h1 { margin: 0; font-size: 28px; font-weight: 600; color: var(--color-text-primary); }
     .tag { margin: 6px 0 0; font-size: 14px; color: var(--color-text-secondary); }
     .card {
