@@ -1,7 +1,23 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
-import { Match } from '../../core/models/models';
+import { Match, ScoringRules } from '../../core/models/models';
 import { TeamBadge } from '../team-badge/team-badge';
 import { ScoreStepper } from '../score-stepper/score-stepper';
+
+/** Puntos según marcador (espejo en TS de score_prediction de la BD). */
+function computePoints(
+  hp: number, ap: number, h: number | null, a: number | null,
+  rules: ScoringRules, knockout: boolean, joker: boolean,
+): number {
+  if (h === null || a === null) return 0;
+  const k = knockout ? 'knockout' : 'group';
+  let pts = 0;
+  if (Math.sign(hp - ap) === Math.sign(h - a)) pts += rules.result[k];
+  if (hp === h) pts += rules.home_goals[k];
+  if (ap === a) pts += rules.away_goals[k];
+  if (hp - ap === h - a) pts += rules.goal_diff[k];
+  if (joker) pts *= rules.joker_multiplier;
+  return pts;
+}
 
 export interface MatchRowState {
   home: number | null;
@@ -105,6 +121,8 @@ function formatCountdown(ms: number): string {
           </span>
           @if (mState() === 'finished' && state().points !== null) {
             <span class="badge ok"><i class="ti ti-trophy"></i> +{{ state().points }} pts</span>
+          } @else if (mState() === 'live' && provisional() !== null) {
+            <span class="badge prov"><i class="ti ti-bolt"></i> +{{ provisional() }} provisional</span>
           } @else if (state().isJoker) {
             <span class="badge warn"><i class="ti ti-bolt"></i> Comodín x2</span>
           }
@@ -139,12 +157,14 @@ function formatCountdown(ms: number): string {
     .badge i { font-size: 14px; }
     .badge.ok { background: var(--color-background-success); color: var(--color-text-success); }
     .badge.warn { background: var(--color-background-warning); color: var(--color-text-warning); }
+    .badge.prov { background: var(--color-background-info); color: var(--color-text-info); }
   `,
 })
 export class MatchCard {
   readonly match = input.required<Match>();
   readonly state = input.required<MatchRowState>();
   readonly jokerEnabled = input(false);
+  readonly rules = input<ScoringRules | null>(null);
 
   readonly homeChange = output<number>();
   readonly awayChange = output<number>();
@@ -161,6 +181,15 @@ export class MatchCard {
   });
 
   readonly hasPrediction = computed(() => this.state().home !== null && this.state().away !== null);
+
+  /** Puntos provisionales con el marcador en vivo. */
+  readonly provisional = computed(() => {
+    const r = this.rules();
+    const s = this.state();
+    const m = this.match();
+    if (this.mState() !== 'live' || s.home === null || s.away === null || !r) return null;
+    return computePoints(s.home, s.away, m.home_score_live, m.away_score_live, r, m.is_knockout, s.isJoker);
+  });
 
   readonly closingSoon = computed(() => {
     const m = this.match();

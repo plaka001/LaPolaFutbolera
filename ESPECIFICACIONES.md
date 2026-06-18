@@ -280,7 +280,7 @@ src/
 ### Fase 3 — Resultados y puntaje ✅ (tabla lista; movimiento diferido)
 - [x] Puntaje automático: trigger `matches_settle_on_finish` → `settle_match` al finalizar (sin cron). `0006`.
 - [x] Tabla de posiciones: RPC `polla_standings` (desempate puntos > exactos > aciertos) + pantalla con medallas top-3 y resalte "Vos".
-- [ ] `sync-results` por cron — ponytail: para ops; hoy se refresca invocando `import-fixtures`.
+- [x] `sync-results` por **cron** (`0008`): pg_cron + pg_net, cada 15 min llama a `import-fixtures` → actualiza `matches` → el trigger liquida puntos. Probado: HTTP 200, importó 104 (Mundial) + 189 (Champions).
 - [ ] Flechas de movimiento (snapshots `round_standings`) — diferido a cuando haya rondas cerrando.
 
 ### Fase 4 — Pozo y pagos ✅
@@ -295,12 +295,17 @@ src/
 - [ ] Disparar las notis (recordatorio de cierre / te pasaron / resultado) — necesitan cron + hooks → van con Fase 6 ("notis pura sal").
 - ⚠️ El SW está **desactivado en `ng serve`** → push solo funciona en build/deploy **HTTPS**. Falta: setear secrets `VAPID_PUBLIC_KEY`/`VAPID_PRIVATE_KEY` y **desplegar** (hosting §17).
 
-### Fase 6 — Gamificación ⬅️ (próxima)
-- [ ] Salón de la fama, duelos, notis pura sal, rachas, apodos/foto
+### Fase 6 — Gamificación (parcial)
+- [x] **Apodos** editables en Perfil → se reflejan en tabla/pozo (`profiles.nickname`).
+- [x] **Notis de resultado**: al cerrar partido `settle_match` crea noti in-app + dispara push (`0012`). Campana con badge en el home + pantalla `/notificaciones`.
+- [x] **"Te pasaron"**: al recalcular tras un resultado, quien baja de posición recibe noti (snapshot en `round_standings` + `refresh_standings_snapshot`). `0013`. Probado.
+- [ ] Salón de la fama, duelos, rachas, foto de perfil.
 
-### Fase 7 — Live y pulido
-- [ ] Live scores + puntos provisionales (Realtime)
-- [ ] Pulido visual + animaciones
+### Fase 7 — Live y pulido (parcial)
+- [x] **Realtime**: tabla y partidos se actualizan en vivo (publication en `matches`/`predictions` + subscriptions con debounce). `0011`.
+- [x] Rediseño "neón de estadio" (degradé, glow, redondeado, nav flotante, tipografía Archivo + Plus Jakarta Sans).
+- [x] **Puntos provisionales en vivo**: durante el partido el MatchCard muestra cuántos pts llevarías con el marcador actual.
+- [ ] Flechas de movimiento en la tabla (el snapshot de `0013` ya da la base) + más pulido/animaciones.
 
 ---
 

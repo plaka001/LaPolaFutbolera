@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 import { PollaContextService } from '../../core/polla-context.service';
 import { PollaService, PollaCard } from '../../core/polla.service';
+import { SupabaseService } from '../../core/supabase.service';
 
 type Standing = {
   user_id: string;
@@ -92,6 +93,9 @@ export class Tabla {
   protected readonly ctx = inject(PollaContextService);
   private readonly pollas = inject(PollaService);
   private readonly auth = inject(AuthService);
+  private readonly sb = inject(SupabaseService);
+  private readonly destroyRef = inject(DestroyRef);
+  private reloadTimer?: ReturnType<typeof setTimeout>;
 
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
@@ -102,6 +106,21 @@ export class Tabla {
 
   constructor() {
     void this.load();
+    // Realtime: cuando se liquidan puntos (predictions) o cambia un partido, recargar.
+    const ch = this.sb.client
+      .channel('tabla-' + Math.random().toString(36).slice(2))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'predictions' }, () => this.scheduleReload())
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'matches' }, () => this.scheduleReload())
+      .subscribe();
+    this.destroyRef.onDestroy(() => {
+      if (this.reloadTimer) clearTimeout(this.reloadTimer);
+      void this.sb.client.removeChannel(ch);
+    });
+  }
+
+  private scheduleReload() {
+    if (this.reloadTimer) clearTimeout(this.reloadTimer);
+    this.reloadTimer = setTimeout(() => void this.load(), 1500);
   }
 
   async load() {

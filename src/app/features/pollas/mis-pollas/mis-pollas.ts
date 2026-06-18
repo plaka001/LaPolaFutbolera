@@ -3,6 +3,7 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../core/auth.service';
 import { PollaService, PollaCard } from '../../../core/polla.service';
 import { PollaContextService } from '../../../core/polla-context.service';
+import { NotificationsService } from '../../../core/notifications.service';
 
 /** Home: las pollas del usuario + accesos a crear y unirse. */
 @Component({
@@ -16,7 +17,13 @@ import { PollaContextService } from '../../../core/polla-context.service';
           <span class="logo"><i class="ti ti-ball-football"></i></span>
           <span class="word">La Pola Futbolera</span>
         </div>
-        <a class="avatar" routerLink="/perfil" aria-label="Mi perfil">{{ auth.initials() }}</a>
+        <div class="actions">
+          <a class="bell" routerLink="/notificaciones" aria-label="Notificaciones">
+            <i class="ti ti-bell"></i>
+            @if (notif.unread() > 0) { <span class="nbadge">{{ notif.unread() > 9 ? '9+' : notif.unread() }}</span> }
+          </a>
+          <a class="avatar" routerLink="/perfil" aria-label="Mi perfil">{{ auth.initials() }}</a>
+        </div>
       </header>
 
       <main class="content">
@@ -119,6 +126,10 @@ import { PollaContextService } from '../../../core/polla-context.service';
       display: flex; align-items: center; justify-content: center;
       font-size: 12px; font-weight: 600; text-decoration: none;
     }
+    .actions { display: flex; align-items: center; gap: 6px; }
+    .bell { position: relative; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); text-decoration: none; }
+    .bell i { font-size: 21px; }
+    .nbadge { position: absolute; top: 1px; right: 0; min-width: 16px; height: 16px; padding: 0 4px; border-radius: 999px; background: var(--color-text-danger); color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
     .content { padding: 4px 14px 24px; }
     .h1 { font-size: 24px; font-weight: 700; margin: 6px 0 14px; }
 
@@ -169,6 +180,7 @@ export class MisPollas {
   protected readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly ctx = inject(PollaContextService);
+  protected readonly notif = inject(NotificationsService);
 
   /** Abre una polla: la deja activa y va a Partidos. */
   open(p: PollaCard) {
@@ -189,6 +201,7 @@ export class MisPollas {
 
   async load() {
     this.loading.set(true);
+    void this.notif.refreshUnread();
     try {
       this.list.set(await this.pollas.myPollas());
       this.error.set(null);

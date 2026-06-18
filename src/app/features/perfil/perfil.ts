@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 import { PushService } from '../../core/push.service';
+import { SupabaseService } from '../../core/supabase.service';
 
 /** Perfil del usuario. Apodo/foto/push llegan en fases próximas. */
 @Component({
@@ -22,6 +23,18 @@ import { PushService } from '../../core/push.service';
             <div class="pn">{{ auth.displayName() }}</div>
             <div class="pe">{{ auth.user()?.email }}</div>
           </div>
+        </div>
+
+        <div class="lp-card apodo">
+          <label class="lp-label" for="nick">Tu apodo (lo ven en la polla)</label>
+          <div class="apodo-row">
+            <input id="nick" class="lp-input" maxlength="24" placeholder="ej. El Profeta"
+                   [value]="nick()" (input)="nick.set($any($event.target).value)" />
+            <button class="lp-btn lp-btn-primary" (click)="saveNick()" [disabled]="nickBusy()">
+              @if (nickBusy()) { <i class="ti ti-loader-2 spin"></i> } @else { Guardar }
+            </button>
+          </div>
+          @if (nickMsg()) { <p class="okmsg">{{ nickMsg() }}</p> }
         </div>
 
         <button class="lp-btn lp-btn-ghost notif" (click)="enableNotifs()">
@@ -54,6 +67,11 @@ import { PushService } from '../../core/push.service';
     .pinfo { min-width: 0; }
     .pn { font-family: var(--font-display); font-weight: 600; font-size: 16px; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .pe { font-size: 12.5px; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .apodo { padding: 14px; margin-top: 12px; }
+    .apodo-row { display: flex; gap: 8px; }
+    .apodo-row .lp-input { flex: 1; min-width: 0; }
+    .apodo-row .lp-btn { flex: 0 0 auto; }
+    .okmsg { font-size: 12px; color: var(--color-text-success); margin: 8px 0 0; }
     .notif { width: 100%; margin-top: 14px; }
     .notifmsg { font-size: 12px; text-align: center; margin: 8px 0 0; color: var(--color-text-secondary); }
     .notifmsg.ok { color: var(--color-text-success); }
@@ -65,9 +83,33 @@ export class Perfil {
   protected readonly auth = inject(AuthService);
   private readonly router = inject(Router);
   private readonly push = inject(PushService);
+  private readonly sb = inject(SupabaseService);
 
   readonly notifMsg = signal<string | null>(null);
   readonly notifOk = signal(false);
+  readonly nick = signal('');
+  readonly nickBusy = signal(false);
+  readonly nickMsg = signal<string | null>(null);
+
+  constructor() {
+    this.nick.set(this.auth.profile()?.nickname ?? '');
+  }
+
+  async saveNick() {
+    const uid = this.auth.user()?.id;
+    if (!uid) return;
+    this.nickBusy.set(true);
+    this.nickMsg.set(null);
+    try {
+      await this.sb.from('profiles').update({ nickname: this.nick().trim() || null }).eq('id', uid);
+      await this.auth.loadProfile(uid);
+      this.nickMsg.set('Apodo guardado.');
+    } catch {
+      this.nickMsg.set('No se pudo guardar.');
+    } finally {
+      this.nickBusy.set(false);
+    }
+  }
 
   async enableNotifs() {
     const r = await this.push.enable();

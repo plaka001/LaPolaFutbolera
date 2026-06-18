@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { PollaContextService } from '../../core/polla-context.service';
 import { PollaService, PollaCard } from '../../core/polla.service';
 import { PredictionService } from '../../core/prediction.service';
-import { Match } from '../../core/models/models';
+import { SupabaseService } from '../../core/supabase.service';
+import { Match, ScoringRules } from '../../core/models/models';
 import { MatchCard, MatchRowState } from '../../shared/match-card/match-card';
 
 /** Partidos por fecha de la polla activa: pronosticar con autosave + comodín. */
@@ -68,6 +69,7 @@ import { MatchCard, MatchRowState } from '../../shared/match-card/match-card';
               [match]="m"
               [state]="rowOf(m.id)"
               [jokerEnabled]="!!polla()?.joker_enabled"
+              [rules]="scoringRules()"
               (homeChange)="onScore(m, 'home', $event)"
               (awayChange)="onScore(m, 'away', $event)"
               (jokerToggle)="onJoker(m)"
@@ -110,6 +112,9 @@ export class Partidos {
   protected readonly ctx = inject(PollaContextService);
   private readonly pollas = inject(PollaService);
   private readonly preds = inject(PredictionService);
+  private readonly sb = inject(SupabaseService);
+  private readonly destroyRef = inject(DestroyRef);
+  private matchTimer?: ReturnType<typeof setTimeout>;
 
   readonly loading = signal(true);
   readonly error = signal<string | null>(null);
@@ -158,6 +163,8 @@ export class Partidos {
     this.selectedStage.set('');
   }
 
+  readonly scoringRules = computed(() => (this.polla()?.scoring_rules as unknown as ScoringRules) ?? null);
+
   readonly myPoints = computed(() => {
     let total = 0;
     for (const r of this.rows().values()) total += r.points ?? 0;
@@ -166,6 +173,30 @@ export class Partidos {
 
   constructor() {
     void this.load();
+    // Realtime: refrescar marcadores/estados en vivo (sin pisar lo que el usuario edita).
+    const ch = this.sb.client
+      .channel('partidos-' + Math.random().toString(36).slice(2))
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'matches' }, () => this.scheduleMatchRefresh())
+      .subscribe();
+    this.destroyRef.onDestroy(() => {
+      if (this.matchTimer) clearTimeout(this.matchTimer);
+      void this.sb.client.removeChannel(ch);
+    });
+  }
+
+  private scheduleMatchRefresh() {
+    if (this.matchTimer) clearTimeout(this.matchTimer);
+    this.matchTimer = setTimeout(() => void this.refreshMatches(), 1500);
+  }
+
+  private async refreshMatches() {
+    const polla = this.polla();
+    if (!polla?.competition_id) return;
+    try {
+      this.matches.set(await this.preds.matches(polla.competition_id));
+    } catch {
+      /* ignore */
+    }
   }
 
   rowOf(id: string): MatchRowState {
