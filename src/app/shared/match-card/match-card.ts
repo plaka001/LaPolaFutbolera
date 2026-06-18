@@ -1,4 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Match, ScoringRules } from '../../core/models/models';
 import { TeamBadge } from '../team-badge/team-badge';
 import { ScoreStepper } from '../score-stepper/score-stepper';
@@ -54,7 +55,7 @@ function formatCountdown(ms: number): string {
 @Component({
   selector: 'app-match-card',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [TeamBadge, ScoreStepper],
+  imports: [TeamBadge, ScoreStepper, RouterLink],
   template: `
     <div class="card">
       <div class="cardtop">
@@ -79,7 +80,7 @@ function formatCountdown(ms: number): string {
       </div>
 
       <div class="match">
-        <app-team-badge [name]="match().home_team" />
+        <app-team-badge [name]="match().home_team" [logo]="match().home_logo" />
 
         @if (mState() === 'open') {
           <div class="scorerow">
@@ -95,7 +96,7 @@ function formatCountdown(ms: number): string {
           </div>
         }
 
-        <app-team-badge [name]="match().away_team" />
+        <app-team-badge [name]="match().away_team" [logo]="match().away_logo" />
       </div>
 
       <div class="foot">
@@ -119,13 +120,16 @@ function formatCountdown(ms: number): string {
             @if (hasPrediction()) { Tu pronóstico: {{ state().home }} - {{ state().away }} }
             @else { Sin pronóstico }
           </span>
-          @if (mState() === 'finished' && state().points !== null) {
-            <span class="badge ok"><i class="ti ti-trophy"></i> +{{ state().points }} pts</span>
-          } @else if (mState() === 'live' && provisional() !== null) {
-            <span class="badge prov"><i class="ti ti-bolt"></i> +{{ provisional() }} provisional</span>
-          } @else if (state().isJoker) {
-            <span class="badge warn"><i class="ti ti-bolt"></i> Comodín x2</span>
-          }
+          <span class="footright">
+            @if (mState() === 'finished' && state().points !== null) {
+              <span class="badge ok"><i class="ti ti-trophy"></i> +{{ state().points }} pts</span>
+            } @else if (mState() === 'live' && provisional() !== null) {
+              <span class="badge prov"><i class="ti ti-bolt"></i> +{{ provisional() }} provisional</span>
+            } @else if (state().isJoker) {
+              <span class="badge warn"><i class="ti ti-bolt"></i> Comodín x2</span>
+            }
+            <a class="seeall" [routerLink]="['/partido', match().id]"><i class="ti ti-eye"></i> Ver</a>
+          </span>
         }
       </div>
     </div>
@@ -145,6 +149,9 @@ function formatCountdown(ms: number): string {
     .sbox.done { background: var(--color-background-secondary); border-color: var(--color-border-secondary); }
     .sbox.lock { background: var(--color-background-tertiary); border-color: var(--color-border-tertiary); color: var(--color-text-tertiary); }
     .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; border-top: 0.5px solid var(--color-border-tertiary); padding-top: 8px; gap: 8px; }
+    .footright { display: inline-flex; align-items: center; gap: 8px; }
+    .seeall { font-size: 12px; display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px; border-radius: 999px; border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); text-decoration: none; }
+    .seeall i { font-size: 14px; }
     .chip { font-size: 12px; display: inline-flex; align-items: center; gap: 5px; padding: 5px 10px; border-radius: 999px; border: 0.5px solid var(--color-border-tertiary); color: var(--color-text-secondary); cursor: pointer; background: transparent; font-family: inherit; min-height: 32px; }
     .chip i { font-size: 14px; }
     .chip.active { background: var(--color-background-success); color: var(--color-text-success); border-color: var(--color-border-success); font-weight: 600; }

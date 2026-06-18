@@ -295,17 +295,19 @@ src/
 - [ ] Disparar las notis (recordatorio de cierre / te pasaron / resultado) — necesitan cron + hooks → van con Fase 6 ("notis pura sal").
 - ⚠️ El SW está **desactivado en `ng serve`** → push solo funciona en build/deploy **HTTPS**. Falta: setear secrets `VAPID_PUBLIC_KEY`/`VAPID_PRIVATE_KEY` y **desplegar** (hosting §17).
 
-### Fase 6 — Gamificación (parcial)
+### Fase 6 — Gamificación ✅
 - [x] **Apodos** editables en Perfil → se reflejan en tabla/pozo (`profiles.nickname`).
 - [x] **Notis de resultado**: al cerrar partido `settle_match` crea noti in-app + dispara push (`0012`). Campana con badge en el home + pantalla `/notificaciones`.
 - [x] **"Te pasaron"**: al recalcular tras un resultado, quien baja de posición recibe noti (snapshot en `round_standings` + `refresh_standings_snapshot`). `0013`. Probado.
-- [ ] Salón de la fama, duelos, rachas, foto de perfil.
+- [x] **Salón de la fama, rachas y duelos** (`/stats`, link 🏆 desde Tabla): records (líder, francotirador, racha, comodín), ranking de rachas (aciertos consecutivos) y duelo 1-a-1 head-to-head. Todo client-side desde el historial puntuado (`predictions` con `points not null`; la RLS solo revela ajenos tras el cierre).
+- [x] **Foto de perfil** (`0015`): `handle_new_user` copia la foto de Google (+ backfill) y bucket `avatars` (cada uno escribe su `{uid}.ext`) para subir la propia desde Perfil. Componente `<app-avatar>` (foto → fallback iniciales) en tabla/pozo/stats/pronósticos/perfil.
 
 ### Fase 7 — Live y pulido (parcial)
 - [x] **Realtime**: tabla y partidos se actualizan en vivo (publication en `matches`/`predictions` + subscriptions con debounce). `0011`.
 - [x] Rediseño "neón de estadio" (degradé, glow, redondeado, nav flotante, tipografía Archivo + Plus Jakarta Sans).
 - [x] **Puntos provisionales en vivo**: durante el partido el MatchCard muestra cuántos pts llevarías con el marcador actual.
-- [ ] Flechas de movimiento en la tabla (el snapshot de `0013` ya da la base) + más pulido/animaciones.
+- [x] **Flechas de movimiento** en la tabla (`0014`). + **Banderas/escudos reales** (`<app-team-badge>` con el `crest` de football-data.org, sin fondo, fallback a código). + **Pantalla "ver pronósticos"** de un partido (`/partido/:id`) y **modal de puntajes** en Partidos.
+- [ ] Más pulido/animaciones; subsetting de íconos Tabler.
 
 ---
 

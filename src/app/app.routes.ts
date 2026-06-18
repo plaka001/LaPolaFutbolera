@@ -40,8 +40,16 @@ export const routes: Routes = [
         loadComponent: () => import('./features/partidos/partidos').then((m) => m.Partidos),
       },
       {
+        path: 'partido/:matchId',
+        loadComponent: () => import('./features/partidos/match-preds').then((m) => m.MatchPreds),
+      },
+      {
         path: 'tabla',
         loadComponent: () => import('./features/tabla/tabla').then((m) => m.Tabla),
+      },
+      {
+        path: 'stats',
+        loadComponent: () => import('./features/stats/stats').then((m) => m.Stats),
       },
       {
         path: 'pozo',

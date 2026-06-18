@@ -474,6 +474,7 @@ export type Database = {
           exacts: number;
           results: number;
           played: number;
+          movement: number;
         }[];
       };
       score_prediction: {

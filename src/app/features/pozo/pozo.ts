@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Avatar } from '../../shared/avatar/avatar';
 import { AuthService } from '../../core/auth.service';
 import { PollaContextService } from '../../core/polla-context.service';
 import { PollaService, PollaCard, PollaMemberRow } from '../../core/polla.service';
@@ -8,7 +9,7 @@ import { PollaService, PollaCard, PollaMemberRow } from '../../core/polla.servic
 @Component({
   selector: 'app-pozo',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink],
+  imports: [RouterLink, Avatar],
   template: `
     @if (!ctx.activePollaId()) {
       <section class="px-4 pt-3">
@@ -83,7 +84,7 @@ import { PollaService, PollaCard, PollaMemberRow } from '../../core/polla.servic
         <div class="members">
           @for (m of members(); track m.id) {
             <div class="mrow" [class.me]="isMe(m)">
-              <div class="av">{{ initials(name(m)) }}</div>
+              <app-avatar class="av" [url]="m.profile?.avatar_url ?? null" [name]="name(m)" />
               <div class="info">
                 <div class="nm">{{ name(m) }} @if (m.role === 'admin') { <span class="adm">admin</span> }</div>
                 <div class="msub">{{ m.paid ? (polla()?.prize_type === 'pozo' ? 'Pagó' : 'Confirmado') : 'Pendiente' }}</div>
@@ -143,7 +144,7 @@ import { PollaService, PollaCard, PollaMemberRow } from '../../core/polla.servic
     .members { display: flex; flex-direction: column; gap: 6px; }
     .mrow { display: flex; align-items: center; gap: 10px; padding: 9px 11px; border-radius: var(--border-radius-md); background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); }
     .mrow.me { background: var(--color-background-info); border-color: var(--color-border-info); }
-    .av { width: 34px; height: 34px; border-radius: 50%; background: var(--color-background-secondary); border: 0.5px solid var(--color-border-secondary); display: flex; align-items: center; justify-content: center; font-family: var(--font-display); font-size: 12px; font-weight: 600; flex-shrink: 0; }
+    .av { width: 34px; height: 34px; }
     .info { flex: 1; min-width: 0; }
     .nm { font-size: 13.5px; font-weight: 600; color: var(--color-text-primary); display: flex; align-items: center; gap: 6px; }
     .adm { font-size: 10px; font-weight: 600; background: var(--color-background-secondary); color: var(--color-text-secondary); padding: 1px 6px; border-radius: 999px; }
@@ -208,11 +209,6 @@ export class Pozo {
 
   isMe(m: PollaMemberRow): boolean {
     return m.user_id === this.myId();
-  }
-
-  initials(n: string): string {
-    const p = n.trim().split(/\s+/).filter(Boolean);
-    return ((p[0]?.[0] ?? '') + (p.length > 1 ? p[p.length - 1][0] : (p[0]?.[1] ?? ''))).toUpperCase() || 'JU';
   }
 
   async togglePaid(m: PollaMemberRow) {

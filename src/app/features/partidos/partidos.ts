@@ -29,11 +29,11 @@ import { MatchCard, MatchRowState } from '../../shared/match-card/match-card';
       <header class="phead">
         <div class="ptitle">
           <span class="logo"><i class="ti ti-trophy"></i></span>
-          <div class="meta">
+          <a class="meta" [routerLink]="['/polla', polla()!.id]">
             <div class="nm">{{ polla()?.name }}</div>
             <div class="sub">{{ polla()?.competition?.name ?? 'Sin competición' }} · {{ myPoints() }} pts</div>
-          </div>
-          <a class="info" [routerLink]="['/polla', polla()!.id]" aria-label="Info de la polla"><i class="ti ti-info-circle"></i></a>
+          </a>
+          <button class="info" type="button" (click)="showRules.set(true)" aria-label="Cómo se ganan los puntos"><i class="ti ti-help-circle"></i></button>
         </div>
 
         <div class="filters">
@@ -77,6 +77,52 @@ import { MatchCard, MatchRowState } from '../../shared/match-card/match-card';
           }
         }
       </section>
+
+      @if (showRules() && rulesView(); as rv) {
+        <div class="backdrop" (click)="showRules.set(false)">
+          <div class="sheet" (click)="$event.stopPropagation()">
+            <div class="grip"></div>
+            <div class="shead">
+              <h2><i class="ti ti-list-check"></i> ¿Cómo se ganan los puntos?</h2>
+              <button class="x" type="button" (click)="showRules.set(false)" aria-label="Cerrar"><i class="ti ti-x"></i></button>
+            </div>
+            <p class="intro">Pronosticá el marcador de cada partido. Sumás puntos por cada cosa que aciertes:</p>
+
+            <div class="rules">
+              @if (rv.split) {
+                <div class="rrow head"><span class="rl"></span><span class="rg">Grupos</span><span class="rk">Elim.</span></div>
+              }
+              @for (row of rv.rows; track row.label) {
+                <div class="rrow">
+                  <span class="rl"><b>{{ row.label }}</b><small>{{ row.desc }}</small></span>
+                  <span class="rg">+{{ row.group }}</span>
+                  @if (rv.split) { <span class="rk">+{{ row.knockout }}</span> }
+                </div>
+              }
+            </div>
+
+            <div class="note ok">
+              <i class="ti ti-target-arrow"></i>
+              <div>
+                <b>Marcador exacto</b>
+                <span>Si clavás el resultado exacto sumás todo junto: <b>{{ rv.exactGroup }} pts</b>@if (rv.split) { en grupos y <b>{{ rv.exactKnock }} pts</b> en eliminación}.</span>
+              </div>
+            </div>
+
+            @if (polla()?.joker_enabled) {
+              <div class="note warn">
+                <i class="ti ti-bolt"></i>
+                <div>
+                  <b>Comodín ×{{ rv.joker }}</b>
+                  <span>Una vez por fecha podés activarlo en un partido para multiplicar ×{{ rv.joker }} los puntos que saques ahí.</span>
+                </div>
+              </div>
+            }
+
+            <button class="lp-btn lp-btn-primary done" type="button" (click)="showRules.set(false)">Entendido</button>
+          </div>
+        </div>
+      }
     }
   `,
   styles: `
@@ -92,11 +138,40 @@ import { MatchCard, MatchRowState } from '../../shared/match-card/match-card';
     .ptitle { display: flex; align-items: center; gap: 10px; }
     .logo { width: 36px; height: 36px; border-radius: var(--border-radius-md); background: var(--color-background-warning); color: var(--color-text-warning); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .logo i { font-size: 20px; }
-    .meta { flex: 1; min-width: 0; }
+    .meta { flex: 1; min-width: 0; text-decoration: none; color: inherit; }
     .nm { font-family: var(--font-display); font-weight: 700; font-size: 18px; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .sub { font-size: 12px; color: var(--color-text-secondary); }
-    .info { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); text-decoration: none; flex-shrink: 0; }
-    .info i { font-size: 20px; }
+    .info { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--color-text-secondary); background: var(--color-background-secondary); border: 0; cursor: pointer; flex-shrink: 0; }
+    .info i { font-size: 21px; }
+
+    .backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(2px); display: flex; align-items: flex-end; justify-content: center; z-index: 50; }
+    .sheet { width: 100%; max-width: 480px; background: var(--color-background-primary); border-radius: 22px 22px 0 0; padding: 8px 18px max(18px, env(safe-area-inset-bottom)); box-shadow: var(--shadow-lg); animation: sheetup .22s ease; max-height: 88vh; overflow-y: auto; }
+    @keyframes sheetup { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .grip { width: 38px; height: 4px; border-radius: 999px; background: var(--color-border-secondary); margin: 6px auto 12px; }
+    .shead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .shead h2 { font-family: var(--font-display); font-size: 18px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px; }
+    .shead h2 i { color: var(--color-text-success); }
+    .x { width: 32px; height: 32px; border: 0; background: var(--color-background-secondary); border-radius: 50%; color: var(--color-text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .intro { font-size: 13px; color: var(--color-text-secondary); margin: 0 0 12px; }
+    .rules { display: flex; flex-direction: column; gap: 3px; margin-bottom: 12px; }
+    .rrow { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px; padding: 10px 11px; border-radius: var(--border-radius-md); background: var(--color-background-secondary); }
+    .rrow.head { background: transparent; padding: 0 11px; }
+    .rrow.head .rg, .rrow.head .rk { font-size: 11px; color: var(--color-text-tertiary); font-weight: 600; }
+    .rl { display: flex; flex-direction: column; }
+    .rl b { font-size: 13.5px; color: var(--color-text-primary); }
+    .rl small { font-size: 11px; color: var(--color-text-secondary); margin-top: 1px; }
+    .rg, .rk { font-family: var(--font-display); font-weight: 700; font-size: 15px; min-width: 40px; text-align: right; }
+    .rg { color: var(--color-text-success); }
+    .rk { color: var(--color-text-info); }
+    .note { display: flex; gap: 10px; padding: 12px; border-radius: var(--border-radius-md); margin-bottom: 10px; }
+    .note i { font-size: 22px; flex-shrink: 0; }
+    .note b { display: block; font-size: 13.5px; margin-bottom: 2px; color: var(--color-text-primary); }
+    .note span { font-size: 12px; color: var(--color-text-secondary); line-height: 1.45; }
+    .note.ok { background: var(--color-background-success); }
+    .note.ok i { color: var(--color-text-success); }
+    .note.warn { background: var(--color-background-warning); }
+    .note.warn i { color: var(--color-text-warning); }
+    .done { width: 100%; margin-top: 4px; }
 
     .filters { display: flex; gap: 8px; margin: 12px 0 0; }
     .fdate { flex: 0 0 auto; width: auto; max-width: 48%; min-height: 40px; }
@@ -123,6 +198,7 @@ export class Partidos {
   readonly rows = signal<Map<string, MatchRowState>>(new Map());
   readonly selectedDate = signal<string>('');
   readonly selectedStage = signal<string>('');
+  readonly showRules = signal(false);
 
   private readonly timers = new Map<string, ReturnType<typeof setTimeout>>();
 
@@ -164,6 +240,25 @@ export class Partidos {
   }
 
   readonly scoringRules = computed(() => (this.polla()?.scoring_rules as unknown as ScoringRules) ?? null);
+
+  /** Reglas de puntaje traducidas a filas legibles para el modal de ayuda. */
+  readonly rulesView = computed(() => {
+    const r = this.scoringRules();
+    if (!r) return null;
+    const rows = [
+      { label: 'Resultado', desc: 'Acertás quién gana o si es empate', group: r.result.group, knockout: r.result.knockout },
+      { label: 'Goles del local', desc: 'Acertás los goles del equipo de casa', group: r.home_goals.group, knockout: r.home_goals.knockout },
+      { label: 'Goles del visitante', desc: 'Acertás los goles del visitante', group: r.away_goals.group, knockout: r.away_goals.knockout },
+      { label: 'Diferencia de goles', desc: 'Acertás por cuántos goles se define', group: r.goal_diff.group, knockout: r.goal_diff.knockout },
+    ];
+    return {
+      rows,
+      split: rows.some((x) => x.group !== x.knockout),
+      exactGroup: rows.reduce((s, x) => s + x.group, 0),
+      exactKnock: rows.reduce((s, x) => s + x.knockout, 0),
+      joker: r.joker_multiplier,
+    };
+  });
 
   readonly myPoints = computed(() => {
     let total = 0;

@@ -31,6 +31,8 @@ export class AuthService {
     const second = parts.length > 1 ? parts[parts.length - 1][0] : (parts[0]?.[1] ?? '');
     return (first + second).toUpperCase() || 'JU';
   });
+  /** Foto de perfil (Google o subida por el usuario). */
+  readonly avatarUrl = computed(() => this.profile()?.avatar_url ?? null);
 
   /** Resuelve cuando ya se leyó la sesión inicial (lo usan los guards). */
   private readonly ready: Promise<void>;
@@ -88,6 +90,24 @@ export class AuthService {
       email,
       options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
     });
+  }
+
+  /** Sube la foto de perfil al bucket `avatars` y guarda la URL.
+   *  ponytail: si cambiás de extensión el archivo viejo queda huérfano (lo aceptamos). */
+  async uploadAvatar(file: File): Promise<void> {
+    const uid = this.user()?.id;
+    if (!uid) throw new Error('No hay sesión activa.');
+    const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+    const path = `${uid}.${ext}`;
+    const { error } = await this.sb.client.storage
+      .from('avatars')
+      .upload(path, file, { upsert: true, contentType: file.type });
+    if (error) throw error;
+    const base = this.sb.client.storage.from('avatars').getPublicUrl(path).data.publicUrl;
+    const url = `${base}?v=${Date.now()}`; // cache-bust al reemplazar
+    const { error: e2 } = await this.sb.from('profiles').update({ avatar_url: url }).eq('id', uid);
+    if (e2) throw e2;
+    await this.loadProfile(uid);
   }
 
   signOut() {

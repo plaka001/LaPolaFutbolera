@@ -3,12 +3,13 @@ import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/auth.service';
 import { PushService } from '../../core/push.service';
 import { SupabaseService } from '../../core/supabase.service';
+import { Avatar } from '../../shared/avatar/avatar';
 
-/** Perfil del usuario. Apodo/foto/push llegan en fases próximas. */
+/** Perfil del usuario: foto, apodo y notificaciones. */
 @Component({
   selector: 'app-perfil',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink],
+  imports: [RouterLink, Avatar],
   template: `
     <div class="page">
       <header class="appbar">
@@ -18,12 +19,17 @@ import { SupabaseService } from '../../core/supabase.service';
 
       <main class="content">
         <div class="lp-card prof">
-          <div class="pav">{{ auth.initials() }}</div>
+          <label class="pavwrap" [class.busy]="avatarBusy()">
+            <app-avatar class="pav" [url]="auth.avatarUrl()" [name]="auth.displayName()" />
+            <span class="cam"><i class="ti" [class.ti-camera]="!avatarBusy()" [class.ti-loader-2]="avatarBusy()" [class.spin]="avatarBusy()"></i></span>
+            <input type="file" accept="image/*" hidden (change)="onAvatarFile($event)" />
+          </label>
           <div class="pinfo">
             <div class="pn">{{ auth.displayName() }}</div>
             <div class="pe">{{ auth.user()?.email }}</div>
           </div>
         </div>
+        @if (avatarMsg()) { <p class="okmsg avc">{{ avatarMsg() }}</p> }
 
         <div class="lp-card apodo">
           <label class="lp-label" for="nick">Tu apodo (lo ven en la polla)</label>
@@ -45,8 +51,6 @@ import { SupabaseService } from '../../core/supabase.service';
         <button class="lp-btn lp-btn-ghost out" (click)="signOut()">
           <i class="ti ti-logout"></i> Cerrar sesión
         </button>
-
-        <p class="hint">Apodo y foto llegan en próximas fases.</p>
       </main>
     </div>
   `,
@@ -58,12 +62,12 @@ import { SupabaseService } from '../../core/supabase.service';
     .back i { font-size: 22px; }
     .content { padding: 8px 14px 24px; }
     .prof { display: flex; align-items: center; gap: 14px; padding: 16px; }
-    .pav {
-      width: 52px; height: 52px; border-radius: 50%; flex-shrink: 0;
-      background: var(--color-background-info); color: var(--color-text-info);
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-display); font-size: 17px; font-weight: 600;
-    }
+    .pavwrap { position: relative; cursor: pointer; flex-shrink: 0; line-height: 0; }
+    .pavwrap.busy { opacity: 0.6; }
+    .pav { width: 56px; height: 56px; --av-fs: 18px; --av-bg: var(--color-background-info); --av-fg: var(--color-text-info); }
+    .cam { position: absolute; right: -2px; bottom: -2px; width: 22px; height: 22px; border-radius: 50%; background: var(--color-brand); color: var(--color-brand-contrast); display: flex; align-items: center; justify-content: center; border: 2px solid var(--color-background-primary); }
+    .cam i { font-size: 12px; }
+    .avc { text-align: center; }
     .pinfo { min-width: 0; }
     .pn { font-family: var(--font-display); font-weight: 600; font-size: 16px; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .pe { font-size: 12.5px; color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -90,6 +94,8 @@ export class Perfil {
   readonly nick = signal('');
   readonly nickBusy = signal(false);
   readonly nickMsg = signal<string | null>(null);
+  readonly avatarBusy = signal(false);
+  readonly avatarMsg = signal<string | null>(null);
 
   constructor() {
     this.nick.set(this.auth.profile()?.nickname ?? '');
@@ -108,6 +114,23 @@ export class Perfil {
       this.nickMsg.set('No se pudo guardar.');
     } finally {
       this.nickBusy.set(false);
+    }
+  }
+
+  async onAvatarFile(e: Event) {
+    const input = e.target as HTMLInputElement;
+    const file = input.files?.[0];
+    if (!file) return;
+    this.avatarBusy.set(true);
+    this.avatarMsg.set(null);
+    try {
+      await this.auth.uploadAvatar(file);
+      this.avatarMsg.set('Foto actualizada.');
+    } catch {
+      this.avatarMsg.set('No se pudo subir la foto.');
+    } finally {
+      this.avatarBusy.set(false);
+      input.value = '';
     }
   }
 
