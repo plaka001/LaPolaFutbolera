@@ -117,6 +117,9 @@ html,
 body {
   height: 100%;
 }
+html {
+  background: var(--color-background-tertiary);
+}
 body {
   margin: 0;
   background: var(--grad-app);
@@ -129,7 +132,6 @@ body {
   text-rendering: optimizeLegibility;
   overscroll-behavior-y: none;
   overflow: hidden;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
 }
 
 /* Hosts de ruta como bloque full-width → la columna de 480px se centra. */

@@ -27,6 +27,7 @@ import { BottomNav } from '../shared/bottom-nav/bottom-nav';
       min-height: 0;
       overflow-y: auto;
       overflow-x: hidden;
+      padding-top: env(safe-area-inset-top);
     }
   `,
 })
