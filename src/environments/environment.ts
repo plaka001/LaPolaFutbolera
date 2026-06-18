@@ -2,6 +2,8 @@
 // Claves sensibles (API-Football, VAPID private, service role) van en Supabase secrets.
 export const environment = {
   production: true,
+  // URL pública canónica (para los links de invitación compartibles).
+  appUrl: 'https://la-pola-futbolera.vercel.app',
   supabaseUrl: 'https://seqcwsszqxmuzcordkgn.supabase.co',
   supabaseKey: 'sb_publishable_jSyW0l-AABUDQNfp6uy_8Q_FSPlgCvX',
   // VAPID public key (pública; la privada va en secret de Supabase).

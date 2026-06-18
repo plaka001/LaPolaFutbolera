@@ -27,7 +27,9 @@ import { AppNotification } from '../../core/models/models';
         } @else {
           @for (n of items(); track n.id) {
             <div class="lp-card nrow" [class.unread]="!n.read">
-              <span class="ic2"><i class="ti ti-ball-football"></i></span>
+              <span class="ic2" [class.warn]="n.type === 'reminder'" [class.danger]="n.type === 'overtaken'">
+                <i class="ti {{ icon(n.type) }}"></i>
+              </span>
               <div class="ninfo">
                 <div class="nt">{{ n.title }}</div>
                 <div class="nb">{{ n.body }}</div>
@@ -55,6 +57,8 @@ import { AppNotification } from '../../core/models/models';
     .nrow { display: flex; gap: 11px; align-items: flex-start; padding: 12px; }
     .nrow.unread { border-color: var(--color-border-success); }
     .ic2 { width: 36px; height: 36px; border-radius: 11px; flex-shrink: 0; background: var(--color-background-success); color: var(--color-text-success); display: flex; align-items: center; justify-content: center; }
+    .ic2.warn { background: var(--color-background-warning); color: var(--color-text-warning); }
+    .ic2.danger { background: var(--color-background-danger); color: var(--color-text-danger); }
     .ic2 i { font-size: 19px; }
     .ninfo { min-width: 0; }
     .nt { font-family: var(--font-display); font-weight: 600; font-size: 14px; color: var(--color-text-primary); }
@@ -82,6 +86,10 @@ export class Notificaciones {
     } finally {
       this.loading.set(false);
     }
+  }
+
+  icon(type: string): string {
+    return type === 'reminder' ? 'ti-clock-hour-4' : type === 'overtaken' ? 'ti-trending-down' : 'ti-ball-football';
   }
 
   when(iso: string): string {

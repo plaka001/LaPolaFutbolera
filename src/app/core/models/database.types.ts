@@ -447,6 +447,7 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      close_polla: { Args: { p_polla: string }; Returns: undefined };
       is_polla_admin: { Args: { p_polla: string }; Returns: boolean };
       is_polla_member: { Args: { p_polla: string }; Returns: boolean };
       join_polla: { Args: { p_code: string }; Returns: string };

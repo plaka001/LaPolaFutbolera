@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { environment } from '../../environments/environment';
 import { SupabaseService } from './supabase.service';
 import { AuthService } from './auth.service';
 import {
@@ -158,8 +159,14 @@ export class PollaService {
     return url;
   }
 
+  /** Cierra la polla (status='finished') y notifica a los ganadores (RPC, solo admin). */
+  async closePolla(pollaId: string): Promise<void> {
+    const { error } = await this.sb.client.rpc('close_polla', { p_polla: pollaId });
+    if (error) throw error;
+  }
+
   /** Link de invitación compartible. */
   inviteUrl(code: string): string {
-    return `${window.location.origin}/unirse/${code}`;
+    return `${environment.appUrl}/unirse/${code}`;
   }
 }

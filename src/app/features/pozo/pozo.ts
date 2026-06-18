@@ -5,7 +5,9 @@ import { AuthService } from '../../core/auth.service';
 import { PollaContextService } from '../../core/polla-context.service';
 import { PollaService, PollaCard, PollaMemberRow } from '../../core/polla.service';
 
-/** Pozo y pagos de la polla activa. Admin sube QR y marca pagos. */
+type StandingRow = { user_id: string; display_name: string | null; nickname: string | null; avatar_url: string | null; points: number };
+
+/** Pozo, pagos y reparto del pozo de la polla activa. Admin sube QR, marca pagos y cierra. */
 @Component({
   selector: 'app-pozo',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,6 +51,49 @@ import { PollaService, PollaCard, PollaMemberRow } from '../../core/polla.servic
             <span class="pend"><i class="ti ti-clock"></i> {{ pendingCount() }} pendientes</span>
           </div>
         </div>
+
+        <!-- reparto del pozo -->
+        @if (reparto().length) {
+          <div class="lp-card reparto">
+            <div class="rhead">
+              <span class="rt"><i class="ti ti-coins"></i> {{ isFinished() ? 'Ganadores' : 'Reparto del pozo' }}</span>
+              <span class="rtag" [class.fin]="isFinished()">{{ isFinished() ? 'Final' : 'Proyección' }}</span>
+            </div>
+            @for (r of reparto(); track r.pos) {
+              <div class="prow" [class.gold]="r.pos === 1">
+                <span class="medal">{{ medal(r.pos) }}</span>
+                <app-avatar class="rav" [url]="r.avatar" [name]="r.name" />
+                <div class="rinfo">
+                  <span class="rn">{{ r.name }}</span>
+                  <span class="rp">{{ r.pos }}° puesto · {{ r.pct }}%</span>
+                </div>
+                <span class="rprize">
+                  @if (r.amount !== null) { &#36;{{ r.amount.toLocaleString('es-CO') }} } @else { {{ r.prize }} }
+                </span>
+              </div>
+            }
+            @if (!isFinished()) {
+              <p class="rnote">Así va el reparto si la polla terminara hoy.</p>
+            }
+            @if (isAdmin() && !isFinished()) {
+              @if (!confirmClose()) {
+                <button class="lp-btn lp-btn-ghost closebtn" type="button" (click)="confirmClose.set(true)">
+                  <i class="ti ti-flag-checkered"></i> Cerrar polla y premiar
+                </button>
+              } @else {
+                <div class="confirm">
+                  <p>¿Seguro? Esto cierra la polla y le avisa a los ganadores. No se puede deshacer.</p>
+                  <div class="cbtns">
+                    <button class="lp-btn lp-btn-ghost" type="button" (click)="confirmClose.set(false)" [disabled]="closing()">Cancelar</button>
+                    <button class="lp-btn lp-btn-primary" type="button" (click)="closePolla()" [disabled]="closing()">
+                      @if (closing()) { <i class="ti ti-loader-2 spin"></i> } @else { Sí, cerrar }
+                    </button>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+        }
 
         <!-- tu estado (no admin) -->
         @if (!isAdmin() && myMember(); as me) {
@@ -130,6 +175,27 @@ import { PollaService, PollaCard, PollaMemberRow } from '../../core/polla.servic
     .counts .pend { color: var(--color-text-secondary); }
     .counts i { font-size: 14px; }
 
+    .reparto { padding: 14px; margin-bottom: 12px; }
+    .rhead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .rt { font-family: var(--font-display); font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 7px; }
+    .rt i { color: var(--color-text-warning); font-size: 18px; }
+    .rtag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: var(--color-background-info); color: var(--color-text-info); }
+    .rtag.fin { background: var(--color-background-success); color: var(--color-text-success); }
+    .prow { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 0.5px solid var(--color-border-tertiary); }
+    .prow:first-of-type { border-top: 0; }
+    .medal { font-size: 20px; width: 24px; text-align: center; flex-shrink: 0; }
+    .rav { width: 34px; height: 34px; }
+    .rinfo { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .rn { font-size: 13.5px; font-weight: 600; color: var(--color-text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .rp { font-size: 11px; color: var(--color-text-secondary); }
+    .rprize { font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--color-text-warning); flex-shrink: 0; }
+    .rnote { font-size: 11px; color: var(--color-text-tertiary); margin: 8px 0 0; }
+    .closebtn { width: 100%; margin-top: 12px; }
+    .confirm { margin-top: 12px; padding: 12px; border-radius: var(--border-radius-md); background: var(--color-background-warning); }
+    .confirm p { font-size: 12.5px; color: var(--color-text-warning); margin: 0 0 10px; }
+    .cbtns { display: flex; gap: 8px; }
+    .cbtns .lp-btn { flex: 1; }
+
     .mystatus { display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 11px 12px; border-radius: var(--border-radius-md); margin-bottom: 12px; background: var(--color-background-warning); color: var(--color-text-warning); }
     .mystatus.paid { background: var(--color-background-success); color: var(--color-text-success); }
     .mystatus i { font-size: 18px; }
@@ -163,6 +229,9 @@ export class Pozo {
   readonly busy = signal(false);
   readonly polla = signal<PollaCard | null>(null);
   readonly members = signal<PollaMemberRow[]>([]);
+  readonly standings = signal<StandingRow[]>([]);
+  readonly closing = signal(false);
+  readonly confirmClose = signal(false);
 
   private readonly myId = computed(() => this.auth.user()?.id ?? '');
   readonly isAdmin = computed(() => this.polla()?.created_by === this.myId());
@@ -179,6 +248,29 @@ export class Pozo {
     const t = this.total();
     return t > 0 ? Math.min(100, Math.round((this.recaudado() / t) * 100)) : 0;
   });
+  readonly isFinished = computed(() => this.polla()?.status === 'finished');
+
+  /** Reparto del pozo por puesto (winner = todo al 1°; top3 = 60/30/10). */
+  readonly reparto = computed(() => {
+    const p = this.polla();
+    if (!p || p.prize_type === 'sin') return [];
+    const pcts = p.prize_distribution === 'top3' ? [60, 30, 10] : [100];
+    const pot = this.recaudado();
+    const rows = this.standings();
+    return pcts
+      .map((pct, i) => {
+        const s = rows[i];
+        return {
+          pos: i + 1,
+          name: s ? s.nickname || s.display_name || 'Jugador' : '—',
+          avatar: s?.avatar_url ?? null,
+          amount: p.prize_type === 'pozo' ? Math.round((pot * pct) / 100) : null,
+          prize: p.prize_type === 'fijo' && i === 0 ? p.fixed_prize || 'Premio' : null,
+          pct,
+        };
+      })
+      .filter((r) => p.prize_type !== 'fijo' || r.pos === 1);
+  });
 
   constructor() {
     void this.load();
@@ -192,9 +284,14 @@ export class Pozo {
     }
     this.loading.set(true);
     try {
-      const [polla, members] = await Promise.all([this.pollas.getPolla(pid), this.pollas.members(pid)]);
+      const [polla, members, standings] = await Promise.all([
+        this.pollas.getPolla(pid),
+        this.pollas.members(pid),
+        this.pollas.standings(pid),
+      ]);
       this.polla.set(polla);
       this.members.set(members);
+      this.standings.set(standings as StandingRow[]);
       this.error.set(null);
     } catch {
       this.error.set('No pudimos cargar el pozo.');
@@ -209,6 +306,25 @@ export class Pozo {
 
   isMe(m: PollaMemberRow): boolean {
     return m.user_id === this.myId();
+  }
+
+  medal(pos: number): string {
+    return pos === 1 ? '🥇' : pos === 2 ? '🥈' : '🥉';
+  }
+
+  async closePolla() {
+    const p = this.polla();
+    if (!p || !this.isAdmin()) return;
+    this.closing.set(true);
+    try {
+      await this.pollas.closePolla(p.id);
+      await this.load();
+      this.confirmClose.set(false);
+    } catch {
+      this.error.set('No se pudo cerrar la polla.');
+    } finally {
+      this.closing.set(false);
+    }
   }
 
   async togglePaid(m: PollaMemberRow) {
