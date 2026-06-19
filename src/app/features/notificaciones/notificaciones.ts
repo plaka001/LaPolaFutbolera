@@ -27,7 +27,7 @@ import { AppNotification } from '../../core/models/models';
         } @else {
           @for (n of items(); track n.id) {
             <div class="lp-card nrow" [class.unread]="!n.read">
-              <span class="ic2" [class.warn]="n.type === 'reminder'" [class.danger]="n.type === 'overtaken'">
+              <span class="ic2" [class.warn]="n.type === 'reminder' || n.type === 'leader'" [class.danger]="n.type === 'overtaken'">
                 <i class="ti {{ icon(n.type) }}"></i>
               </span>
               <div class="ninfo">
@@ -89,7 +89,13 @@ export class Notificaciones {
   }
 
   icon(type: string): string {
-    return type === 'reminder' ? 'ti-clock-hour-4' : type === 'overtaken' ? 'ti-trending-down' : 'ti-ball-football';
+    return type === 'reminder'
+      ? 'ti-clock-hour-4'
+      : type === 'overtaken'
+        ? 'ti-trending-down'
+        : type === 'leader'
+          ? 'ti-crown'
+          : 'ti-ball-football';
   }
 
   when(iso: string): string {

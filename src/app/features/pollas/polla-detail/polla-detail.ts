@@ -12,7 +12,7 @@ import { AuthService } from '../../../core/auth.service';
 import { PollaService, PollaCard } from '../../../core/polla.service';
 import { PollaContextService } from '../../../core/polla-context.service';
 
-/** Detalle de una polla: info + link de invitación + qué viene. */
+/** Detalle de una polla: info + link de invitación + atajos a las secciones. */
 @Component({
   selector: 'app-polla-detail',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -67,10 +67,16 @@ import { PollaContextService } from '../../../core/polla-context.service';
           </a>
 
           <div class="next lp-card">
-            <p class="nt">Lo que viene en esta polla</p>
-            <div class="row"><i class="ti ti-ball-football"></i> Partidos y pronósticos <span class="soon">Fase 2</span></div>
-            <div class="row"><i class="ti ti-list-numbers"></i> Tabla de posiciones <span class="soon">Fase 3</span></div>
-            <div class="row"><i class="ti ti-coin"></i> Pozo y pagos <span class="soon">Fase 4</span></div>
+            <p class="nt">Secciones</p>
+            <button class="row" type="button" (click)="go('/tabla')">
+              <i class="ti ti-list-numbers"></i> <span>Tabla de posiciones</span> <i class="ti ti-chevron-right chev"></i>
+            </button>
+            <button class="row" type="button" (click)="go('/pozo')">
+              <i class="ti ti-coin"></i> <span>Pozo y reparto</span> <i class="ti ti-chevron-right chev"></i>
+            </button>
+            <button class="row" type="button" (click)="go('/stats')">
+              <i class="ti ti-award"></i> <span>Salón de la fama</span> <i class="ti ti-chevron-right chev"></i>
+            </button>
           </div>
         }
       </main>
@@ -110,9 +116,11 @@ import { PollaContextService } from '../../../core/polla-context.service';
 
     .next { margin-top: 16px; padding: 14px; }
     .nt { font-family: var(--font-display); font-weight: 600; font-size: 14px; margin: 0 0 10px; }
-    .row { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--color-text-secondary); padding: 7px 0; }
-    .row i { font-size: 18px; color: var(--color-text-tertiary); }
-    .soon { margin-left: auto; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; background: var(--color-background-secondary); color: var(--color-text-tertiary); padding: 2px 8px; border-radius: 999px; }
+    .row { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--color-text-primary); padding: 11px 2px; width: 100%; background: transparent; border: 0; border-top: 0.5px solid var(--color-border-tertiary); font-family: inherit; cursor: pointer; text-align: left; }
+    .row:first-of-type { border-top: 0; }
+    .row span { flex: 1; }
+    .row > i { font-size: 18px; color: var(--color-text-secondary); }
+    .row .chev { font-size: 18px; color: var(--color-text-tertiary); }
   `,
 })
 export class PollaDetail {
@@ -124,6 +132,12 @@ export class PollaDetail {
   pronosticar() {
     this.ctx.setActive(this.id());
     void this.router.navigate(['/partidos']);
+  }
+
+  /** Deja esta polla activa y abre la sección elegida. */
+  go(path: string) {
+    this.ctx.setActive(this.id());
+    void this.router.navigate([path]);
   }
 
   readonly id = input<string>('');

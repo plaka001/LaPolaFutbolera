@@ -290,11 +290,12 @@ src/
 - [x] **Cierre + reparto del pozo** (`0018` `close_polla`): el admin cierra la polla (`status='finished'`) y se notifica a los ganadores con push (winner=100% al 1°; top3=60/30/10; fijo=premio al 1°). El Pozo muestra el reparto (proyección mientras está activa, "Ganadores/Final" al cerrar). Monto **informativo** (no mueve plata real).
 - Pantalla Pozo (`/pozo`): ramas pozo / fijo / sin; QR; tu estado; reparto del pozo; lista de jugadores con toggle de pago.
 
-### Fase 5 — PWA y push ✅ (infra lista; se activa al desplegar)
+### Fase 5 — PWA y push ✅ (desplegada en Vercel: `la-pola-futbolera.vercel.app`)
 - [x] Service worker + installable — ya desde Fase 0 (manifest + ngsw + íconos).
+- [x] **Banner "Instalar app"** in-app (`InstallService`: captura `beforeinstallprompt`, botón en el home de Mis pollas; iOS muestra instrucciones "Compartir → Agregar a inicio"; dismiss persistente). Mejora retención y habilita push (que necesita PWA instalada o Chrome real).
 - [x] Web Push: claves **VAPID** generadas (pública en `environment`, privada → secret), suscripción vía `SwPush` + toggle en Perfil, tabla `push_subscriptions`, Edge Function **`send-push`** (web-push; probada que importa/corre en Deno).
 - [x] Disparar las notis: **resultado** (`0012`), **te pasaron** (`0013`) y **recordatorio de pronósticos pendientes** (`0017`: cron horario `notify_pending_predictions` → noti `reminder` por jornada que cierra en <3h, dedupe 24h, reusa el trigger `notifications_push`). Las tres disparan push.
-- ⚠️ El SW está **desactivado en `ng serve`** → push solo funciona en build/deploy **HTTPS**. Falta: setear secrets `VAPID_PUBLIC_KEY`/`VAPID_PRIVATE_KEY` y **desplegar** (hosting §17).
+- ⚠️ El SW está **desactivado en `ng serve`** → push solo funciona en build/deploy **HTTPS** (ya desplegado). **Gotcha:** el push NO funciona en webviews (navegador interno de WhatsApp/Instagram) → "push service error"; hay que abrir en Chrome o instalar la PWA. `PushService.enable()` traduce los errores a mensajes accionables.
 
 ### Fase 6 — Gamificación ✅
 - [x] **Apodos** editables en Perfil → se reflejan en tabla/pozo (`profiles.nickname`).

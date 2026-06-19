@@ -5,6 +5,8 @@ import { PollaService, PollaCard } from '../../../core/polla.service';
 import { PollaContextService } from '../../../core/polla-context.service';
 import { NotificationsService } from '../../../core/notifications.service';
 import { Avatar } from '../../../shared/avatar/avatar';
+import { InstallService } from '../../../core/install.service';
+import { PushService } from '../../../core/push.service';
 
 /** Home: las pollas del usuario + accesos a crear y unirse. */
 @Component({
@@ -29,6 +31,22 @@ import { Avatar } from '../../../shared/avatar/avatar';
 
       <main class="content">
         <h1 class="h1">Mis pollas</h1>
+
+        @if (showInstall()) {
+          <div class="install">
+            <span class="iic"><img src="logo-mark.svg" alt="" /></span>
+            <div class="itxt">
+              <b>Instalá La Pola</b>
+              <span>{{ install.isIOS() ? 'Compartir → “Agregar a inicio”' : 'Acceso directo y notificaciones' }}</span>
+            </div>
+            @if (!install.isIOS()) {
+              <button class="lp-btn lp-btn-primary ibtn" type="button" (click)="doInstall()">Instalar</button>
+            }
+            <button class="ix" type="button" (click)="install.dismiss()" aria-label="Cerrar"><i class="ti ti-x"></i></button>
+          </div>
+        } @else if (installMsg()) {
+          <p class="installmsg"><i class="ti ti-circle-check"></i> {{ installMsg() }}</p>
+        }
 
         @if (loading()) {
           <div class="state"><i class="ti ti-loader-2 spin"></i> Cargando tus pollas…</div>
@@ -158,6 +176,18 @@ import { Avatar } from '../../../shared/avatar/avatar';
     .tags { display: flex; gap: 6px; margin-top: 3px; flex-wrap: wrap; }
     .chev { color: var(--color-text-tertiary); font-size: 20px; }
 
+    .install { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--border-radius-lg); background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); margin-bottom: 14px; }
+    .iic { width: 38px; height: 38px; flex-shrink: 0; }
+    .iic img { width: 100%; height: 100%; object-fit: contain; }
+    .itxt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+    .itxt b { font-size: 13.5px; color: var(--color-text-primary); }
+    .itxt span { font-size: 11.5px; color: var(--color-text-secondary); }
+    .ibtn { flex-shrink: 0; padding: 8px 14px; min-height: 36px; }
+    .ix { width: 28px; height: 28px; border: 0; background: transparent; color: var(--color-text-tertiary); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .ix i { font-size: 18px; }
+    .installmsg { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--color-text-success); background: var(--color-background-success); padding: 10px 12px; border-radius: var(--border-radius-md); margin-bottom: 14px; }
+    .installmsg i { font-size: 16px; }
+
     .create { width: 100%; margin: 16px 0 12px; padding: 14px; font-size: 15px; }
 
     .join { padding: 12px; }
@@ -173,11 +203,28 @@ export class MisPollas {
   private readonly router = inject(Router);
   private readonly ctx = inject(PollaContextService);
   protected readonly notif = inject(NotificationsService);
+  protected readonly install = inject(InstallService);
+  private readonly push = inject(PushService);
+  readonly installMsg = signal<string | null>(null);
 
   /** Abre una polla: la deja activa y va a Partidos. */
   open(p: PollaCard) {
     this.ctx.setActive(p.id);
     void this.router.navigate(['/partidos']);
+  }
+
+  readonly showInstall = computed(() => this.install.offer() && !this.install.dismissed());
+
+  /** Instala y, aprovechando el gesto, ofrece activar las notificaciones de una. */
+  async doInstall() {
+    const ok = await this.install.install();
+    if (!ok) return;
+    const r = await this.push.enable();
+    this.installMsg.set(
+      r.ok
+        ? '¡Listo! App instalada y notificaciones activadas. 🔔'
+        : 'App instalada. Activá las notificaciones desde Perfil cuando quieras.',
+    );
   }
 
   readonly loading = signal(true);
