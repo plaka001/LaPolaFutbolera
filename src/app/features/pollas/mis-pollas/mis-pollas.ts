@@ -34,18 +34,60 @@ import { PushService } from '../../../core/push.service';
 
         @if (showInstall()) {
           <div class="install">
-            <span class="iic"><img src="logo-mark.svg" alt="" /></span>
-            <div class="itxt">
-              <b>Instalá La Pola</b>
-              <span>{{ install.isIOS() ? 'Compartir → “Agregar a inicio”' : 'Acceso directo y notificaciones' }}</span>
-            </div>
-            @if (!install.isIOS()) {
-              <button class="lp-btn lp-btn-primary ibtn" type="button" (click)="doInstall()">Instalar</button>
-            }
+            <button class="installmain" type="button" (click)="showSheet.set(true)">
+              <span class="iic"><img src="logo-mark.svg" alt="" /></span>
+              <span class="itxt">
+                <b>Instalá La Pola</b>
+                <span>Tocá para ver cómo · Android o iPhone</span>
+              </span>
+              <i class="ti ti-chevron-right ichev"></i>
+            </button>
             <button class="ix" type="button" (click)="install.dismiss()" aria-label="Cerrar"><i class="ti ti-x"></i></button>
           </div>
         } @else if (installMsg()) {
           <p class="installmsg"><i class="ti ti-circle-check"></i> {{ installMsg() }}</p>
+        }
+
+        @if (showSheet()) {
+          <div class="backdrop" (click)="showSheet.set(false)">
+            <div class="sheet" (click)="$event.stopPropagation()">
+              <div class="grip"></div>
+              <div class="shead">
+                <h2><span class="hlogo"><img src="logo-mark.svg" alt="" /></span> Instalá La Pola</h2>
+                <button class="x" type="button" (click)="showSheet.set(false)" aria-label="Cerrar"><i class="ti ti-x"></i></button>
+              </div>
+
+              @if (install.canInstall()) {
+                <p class="sintro">Queda en tu pantalla de inicio para abrirla al toque. Un solo paso:</p>
+                <button class="lp-btn lp-btn-primary sbig" type="button" (click)="installFromSheet()">
+                  <i class="ti ti-download"></i> Instalar ahora
+                </button>
+              } @else if (install.isIOS()) {
+                <p class="sintro">En iPhone se instala desde <b>Safari</b>, en 2 pasos:</p>
+                <ol class="steps">
+                  <li><span class="num">1</span><span>Tocá <b>Compartir</b> <i class="ti ti-share"></i> (abajo, al centro)</span></li>
+                  <li><span class="num">2</span><span>Bajá y tocá <b>“Agregar a inicio”</b> <i class="ti ti-square-rounded-plus"></i></span></li>
+                </ol>
+                <p class="snote"><i class="ti ti-info-circle"></i> <span>¿La abriste desde WhatsApp? Primero tocá <b>⋯ → Abrir en Safari</b>.</span></p>
+              } @else {
+                <p class="sintro">Instalala desde el menú de tu navegador:</p>
+                <ol class="steps">
+                  <li><span class="num">1</span><span>Tocá el menú <b>⋮</b> (arriba a la derecha)</span></li>
+                  <li><span class="num">2</span><span>Elegí <b>“Instalar app”</b> o <b>“Agregar a pantalla de inicio”</b></span></li>
+                </ol>
+              }
+
+              <div class="snotif">
+                <i class="ti ti-bell-ringing"></i>
+                <div>
+                  <b>No te olvides de las notificaciones 🔔</b>
+                  <span>Cuando la abras instalada, activalas (te las pedimos al abrir, o en Perfil) para enterarte de los cierres de fecha, resultados y cuando alguien te pasa.</span>
+                </div>
+              </div>
+
+              <button class="lp-btn lp-btn-ghost done" type="button" (click)="showSheet.set(false)">Listo</button>
+            </div>
+          </div>
         }
 
         @if (loading()) {
@@ -176,17 +218,41 @@ import { PushService } from '../../../core/push.service';
     .tags { display: flex; gap: 6px; margin-top: 3px; flex-wrap: wrap; }
     .chev { color: var(--color-text-tertiary); font-size: 20px; }
 
-    .install { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border-radius: var(--border-radius-lg); background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); margin-bottom: 14px; }
+    .install { display: flex; align-items: center; border-radius: var(--border-radius-lg); background: var(--color-background-secondary); border: 0.5px solid var(--color-border-tertiary); margin-bottom: 14px; }
+    .installmain { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; padding: 10px 4px 10px 12px; background: transparent; border: 0; font-family: inherit; cursor: pointer; text-align: left; }
     .iic { width: 38px; height: 38px; flex-shrink: 0; }
     .iic img { width: 100%; height: 100%; object-fit: contain; }
     .itxt { flex: 1; min-width: 0; display: flex; flex-direction: column; }
     .itxt b { font-size: 13.5px; color: var(--color-text-primary); }
     .itxt span { font-size: 11.5px; color: var(--color-text-secondary); }
-    .ibtn { flex-shrink: 0; padding: 8px 14px; min-height: 36px; }
-    .ix { width: 28px; height: 28px; border: 0; background: transparent; color: var(--color-text-tertiary); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .ichev { font-size: 20px; color: var(--color-text-tertiary); flex-shrink: 0; }
+    .ix { width: 36px; align-self: stretch; border: 0; background: transparent; color: var(--color-text-tertiary); flex-shrink: 0; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     .ix i { font-size: 18px; }
     .installmsg { display: flex; align-items: center; gap: 7px; font-size: 12.5px; color: var(--color-text-success); background: var(--color-background-success); padding: 10px 12px; border-radius: var(--border-radius-md); margin-bottom: 14px; }
     .installmsg i { font-size: 16px; }
+
+    .backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); backdrop-filter: blur(2px); display: flex; align-items: flex-end; justify-content: center; z-index: 50; }
+    .sheet { width: 100%; max-width: 480px; background: var(--color-background-primary); border-radius: 22px 22px 0 0; padding: 8px 18px max(18px, env(safe-area-inset-bottom)); box-shadow: var(--shadow-card); animation: sheetup .22s ease; max-height: 88vh; overflow-y: auto; }
+    @keyframes sheetup { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .grip { width: 38px; height: 4px; border-radius: 999px; background: var(--color-border-secondary); margin: 6px auto 12px; }
+    .shead { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .shead h2 { font-family: var(--font-display); font-size: 18px; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 9px; }
+    .hlogo { width: 30px; height: 30px; flex-shrink: 0; }
+    .hlogo img { width: 100%; height: 100%; object-fit: contain; }
+    .x { width: 32px; height: 32px; border: 0; background: var(--color-background-secondary); border-radius: 50%; color: var(--color-text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .sintro { font-size: 13.5px; color: var(--color-text-secondary); margin: 0 0 12px; }
+    .sbig { width: 100%; padding: 14px; font-size: 15px; margin-bottom: 4px; }
+    .steps { list-style: none; padding: 0; margin: 0 0 10px; display: flex; flex-direction: column; gap: 12px; }
+    .steps li { display: flex; align-items: center; gap: 11px; font-size: 14px; color: var(--color-text-primary); }
+    .steps .num { width: 26px; height: 26px; flex-shrink: 0; border-radius: 50%; background: var(--color-brand); color: var(--color-brand-contrast); font-family: var(--font-display); font-weight: 700; font-size: 13px; display: flex; align-items: center; justify-content: center; }
+    .steps i { font-size: 19px; color: var(--color-text-secondary); vertical-align: -4px; }
+    .snote { font-size: 12px; color: var(--color-text-secondary); margin: 0 0 12px; display: flex; gap: 6px; align-items: flex-start; }
+    .snote i { font-size: 15px; color: var(--color-text-tertiary); flex-shrink: 0; margin-top: 1px; }
+    .snotif { display: flex; gap: 10px; padding: 12px; border-radius: var(--border-radius-md); background: var(--color-background-info); margin-bottom: 14px; }
+    .snotif > i { font-size: 22px; color: var(--color-text-info); flex-shrink: 0; }
+    .snotif b { display: block; font-size: 13.5px; margin-bottom: 2px; color: var(--color-text-primary); }
+    .snotif span { font-size: 12px; color: var(--color-text-secondary); line-height: 1.45; }
+    .done { width: 100%; }
 
     .create { width: 100%; margin: 16px 0 12px; padding: 14px; font-size: 15px; }
 
@@ -206,6 +272,7 @@ export class MisPollas {
   protected readonly install = inject(InstallService);
   private readonly push = inject(PushService);
   readonly installMsg = signal<string | null>(null);
+  readonly showSheet = signal(false);
 
   /** Abre una polla: la deja activa y va a Partidos. */
   open(p: PollaCard) {
@@ -223,8 +290,13 @@ export class MisPollas {
     this.installMsg.set(
       r.ok
         ? '¡Listo! App instalada y notificaciones activadas. 🔔'
-        : 'App instalada. Activá las notificaciones desde Perfil cuando quieras.',
+        : 'App instalada. Abrila desde el ícono y activá las notificaciones en Perfil.',
     );
+  }
+
+  async installFromSheet() {
+    this.showSheet.set(false);
+    await this.doInstall();
   }
 
   readonly loading = signal(true);
